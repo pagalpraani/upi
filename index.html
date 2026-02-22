@@ -6,7 +6,7 @@
 <title>UPI QR Extractor Pro</title>
 
 <script src="https://unpkg.com/html5-qrcode"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
 
 <style>
 :root {
@@ -159,14 +159,15 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 
 #generatePlaceholder { padding: 40px 20px; border: 2px dashed var(--card-border); border-radius: 16px; margin: 20px 0; color: var(--text-muted); text-align: center; }
 #generatedQR { margin-top: 20px; display: flex; justify-content: center; }
-#generatedQR canvas { border-radius: 16px; background: white; padding: 8px; }
+/* Creates a sleek, shadow-lifted frame for the modern QR */
+#generatedQR canvas { border-radius: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); overflow: hidden; background: white; }
 
 .trust-badge { display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; }
 .trust-badge svg { width: 16px; height: 16px; fill: currentColor; }
 
-.message { padding: 12px; border-radius: 10px; margin-top: 16px; display: none; text-align: center; font-weight: 500; z-index: 100; }
-.success { background: rgba(16, 185, 129, 0.15); color: var(--secondary); border: 1px solid rgba(16, 185, 129, 0.3); }
-.error { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+.message { padding: 12px; border-radius: 10px; margin-top: 16px; display: none; text-align: center; font-weight: 500; z-index: 100; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); backdrop-filter: blur(10px); }
+.success { background: rgba(16, 185, 129, 0.9); color: white; border: 1px solid rgba(16, 185, 129, 1); }
+.error { background: rgba(239, 68, 68, 0.9); color: white; border: 1px solid rgba(239, 68, 68, 1); }
 
 .hidden { display: none !important; }
 .icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
@@ -295,7 +296,7 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 </div>
 
 <footer style="text-align:center; margin-top: auto; padding: 20px; font-size: 0.9rem; color: var(--text-muted); width: 100%;">
-  © <span id="year"></span> Made with ❤️ by <strong>Pagal</strong></strong>
+  © <span id="year"></span> Made with ❤️ by <strong>Pagal</strong>
 </footer>
 
 <script>
@@ -378,7 +379,8 @@ function showMessage(text, type) {
 
   clearTimeout(msg.hideTimeout);
   msg.hideTimeout = setTimeout(() => {
-    msg.style.display = "none";
+    msg.style.animation = "fadeInUp 0.3s ease reverse forwards";
+    setTimeout(() => { msg.style.display = "none"; }, 300);
   }, 3000);
 }
 
@@ -508,7 +510,9 @@ async function shareUPI(source) {
   } catch (err) {}
 }
 
-// --- Generation ---
+// --- Modern QR Generation ---
+let qrCodeInstance = null;
+
 function generateQR() {
   const pa = document.getElementById("newUpiId").value.trim().toLowerCase();
   const pn = document.getElementById("newName").value.trim();
@@ -526,30 +530,63 @@ function generateQR() {
   document.getElementById("generatedQR").innerHTML = "";
   document.getElementById("generatePlaceholder").classList.add("hidden");
 
-  QRCode.toCanvas(upiString, { width: 220, margin: 2, color: { dark: "#0F172A", light: "#FFFFFF" } }, function (err, canvas) {
-    if(err) return;
-    document.getElementById("generatedQR").appendChild(canvas);
-    document.getElementById("generatedQR").classList.remove("hidden");
-    document.getElementById("genActions").classList.remove("hidden");
-    
-    // Auto Scroll After Generate
-    document.getElementById("generatedQR").scrollIntoView({ behavior: "smooth", block: "nearest" });
-    
-    canvas.toBlob((blob) => { generatedBlob = blob; }, "image/png");
+  // Zero-CORS, lightweight embedded SVG Logo for the center
+  const upiLogo = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      <rect width="100" height="100" rx="22" fill="#ffffff" stroke="#e2e8f0" stroke-width="4"/>
+      <text x="50%" y="54%" font-family="system-ui, sans-serif" font-weight="900" font-size="34" fill="#6C63FF" dominant-baseline="middle" text-anchor="middle">UPI</text>
+    </svg>
+  `);
+
+  // Create Modern Styled QR Code
+  qrCodeInstance = new QRCodeStyling({
+    width: 260,
+    height: 260,
+    type: "canvas",
+    data: upiString,
+    image: upiLogo,
+    dotsOptions: {
+        color: "#0F172A", 
+        type: "rounded"   
+    },
+    backgroundOptions: {
+        color: "#FFFFFF", 
+    },
+    imageOptions: {
+        crossOrigin: "anonymous",
+        margin: 10,
+        imageSize: 0.35
+    },
+    cornersSquareOptions: {
+        type: "extra-rounded",
+        color: "#6C63FF" 
+    },
+    cornersDotOptions: {
+        type: "dot",
+        color: "#10B981" 
+    }
   });
+
+  qrCodeInstance.append(document.getElementById("generatedQR"));
+  document.getElementById("generatedQR").classList.remove("hidden");
+  document.getElementById("genActions").classList.remove("hidden");
+  
+  // Auto Scroll After Generate
+  document.getElementById("generatedQR").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  
+  // Extract Blob for the "Share" button
+  qrCodeInstance.getRawData("png").then((blob) => { generatedBlob = blob; });
   
   showMessage(currentLang === 'en' ? "QR Created!" : "क्यूआर बनाया गया!", "success");
 }
 
 function downloadQR() {
-  const canvas = document.querySelector("#generatedQR canvas");
-  if (!canvas) return;
-  const link = document.createElement('a');
-  link.href = canvas.toDataURL("image/png");
-  link.download = 'My-UPI.png';
-  link.click();
+  if (qrCodeInstance) {
+    qrCodeInstance.download({ name: "My-Premium-UPI-QR", extension: "png" });
+  }
 }
 </script>
 
 </body>
 </html>
+
