@@ -533,6 +533,46 @@ function generateQR() {
   // Point directly to your local image file
   const upiLogo = "./upi-logo.png"; 
 
+    // Create Modern Styled QR Code
+  qrCodeInstance = new QRCodeStyling({
+    width: 260,
+    height: 260,
+    type: "canvas",
+    data: upiString,
+    image: upiLogo, // <-- Your 463x163 logo file or Base64 string goes here
+    
+    // 1️⃣ CRITICAL FIX: Boost error correction to 'H' (High). 
+    // This allows up to 30% of the QR code to be covered by a wide logo without breaking it!
+    qrOptions: {
+        errorCorrectionLevel: 'H' 
+    },
+    
+    dotsOptions: {
+        color: "#0F172A", 
+        type: "rounded"   
+    },
+    backgroundOptions: {
+        color: "#FFFFFF", 
+    },
+    
+    // 2️⃣ The formatting fix for wide rectangular logos
+    imageOptions: {
+        crossOrigin: "anonymous",
+        margin: 8,                // Adds a clean white border around the logo
+        imageSize: 0.55,          // Increased width to 55% so the wide logo is legible
+        hideBackgroundDots: true  // Automatically cuts out a perfect rectangle for your 463x163 image
+    },
+    
+    cornersSquareOptions: {
+        type: "extra-rounded",
+        color: "#6C63FF" 
+    },
+    cornersDotOptions: {
+        type: "dot",
+        color: "#10B981" 
+    }
+  });
+
 
   // Create Modern Styled QR Code
   qrCodeInstance = new QRCodeStyling({
