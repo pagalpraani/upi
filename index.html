@@ -251,7 +251,7 @@ body.light-mode .code-block { background: rgba(0,0,0,0.05); border-color: rgba(0
         Create Shareable Links!
       </h3>
       <p id="txtLinkSub">Just manually add your UPI ID and Amount to our base URL to create an instant payment link.</p>
-      <div class="code-block" id="baseLinkCode">https://example.vercel.app/&lt;upi-id&gt;/&lt;amount&gt;</div>
+      <div class="code-block" id="baseLinkCode"></div>
     </div>
     
     <div class="divider"><span id="txtOr">Or, Use Our Generator</span></div>
@@ -293,17 +293,18 @@ body.light-mode .code-block { background: rgba(0,0,0,0.05); border-color: rgba(0
 </div>
 
 <footer style="text-align:center; margin-top: auto; padding: 20px; font-size: 0.9rem; color: var(--text-muted); width: 100%;">
-  © <span id="year"></span> Made with ❤️ by <strong>Yo</strong>
+  © <span id="year"></span> Made with ❤️ by <strong>Your Name</strong>
 </footer>
 
 <script>
 document.getElementById("year").innerText = new Date().getFullYear();
 
-// Configuration
-const BASE_PAY_URL = "https://example.vercel.app";
+// --- Configuration ---
+// Updated to your active GitHub Pages URL
+const BASE_PAY_URL = "https://pagalpraani.github.io/upi/index.html";
 
-// Update the visually displayed base URL inside the UI block
-document.getElementById("baseLinkCode").innerText = `${BASE_PAY_URL}/<upi-id>/<amount>`;
+// Display Query Parameter structure in the UI code block
+document.getElementById("baseLinkCode").innerText = `${BASE_PAY_URL}?pa=<upi-id>&am=<amount>`;
 
 // --- Initialization & LocalStorage ---
 let currentLang = 'en';
@@ -329,7 +330,7 @@ const translations = {
     txtCopy: "Copy ID", txtPay: "Pay Now", txtGenQR: "Generate Card", txtReset: "Reset",
     txtDownload: "Download Card", txtShareGen: "Share Card", uploadLabel: "Select QR Image",
     txtScanToPay: "Scan and Pay", trustText: "100% Secure. Runs locally in your browser.",
-    txtLinkTitle: "Create Shareable Links!", txtLinkSub: "Just manually add your UPI ID and Amount to our base URL to create an instant payment link.",
+    txtLinkTitle: "Create Shareable Links!", txtLinkSub: "Just manually add your UPI ID and Amount as parameters to create an instant payment link.",
     txtOr: "Or, Use Our Generator", txtGenLinkBtn: "Create & Copy Link"
   },
   hi: {
@@ -575,10 +576,10 @@ function generateAndCopyLink() {
     document.getElementById("linkUpiId").classList.add("invalid"); return; 
   }
   
-  // Construct the URL based on user variables
-  let finalUrl = `${BASE_PAY_URL}/${encodeURIComponent(pa)}`;
+  // Safe Query Parameter Structure for static GitHub Pages routing
+  let finalUrl = `${BASE_PAY_URL}?pa=${encodeURIComponent(pa)}`;
   if (am) {
-    finalUrl += `/${encodeURIComponent(am)}`;
+    finalUrl += `&am=${encodeURIComponent(am)}`;
   }
   
   navigator.clipboard.writeText(finalUrl).then(() => { 
