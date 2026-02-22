@@ -54,8 +54,8 @@ body { margin: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; ba
 h1 { margin: 0 0 8px 0; font-weight: 700; font-size: 1.5rem; letter-spacing: -0.5px; }
 .subtitle { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
 
-.tabs { display: flex; justify-content: center; margin-bottom: 24px; background: var(--input-bg); padding: 4px; border-radius: 30px; }
-.tab-btn { flex: 1; padding: 12px 20px; border-radius: 26px; border: none; cursor: pointer; background: transparent; color: var(--text-muted); transition: all 0.3s ease; font-weight: 600; font-size: 0.95rem; }
+.tabs { display: flex; justify-content: center; margin-bottom: 24px; background: var(--input-bg); padding: 4px; border-radius: 30px; flex-wrap: wrap; gap: 4px; }
+.tab-btn { flex: 1; padding: 10px 14px; border-radius: 26px; border: none; cursor: pointer; background: transparent; color: var(--text-muted); transition: all 0.3s ease; font-weight: 600; font-size: 0.9rem; min-width: 80px; }
 .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3); }
 
 .card { background: var(--card); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--card-border); border-radius: 20px; padding: 24px; margin-bottom: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05); transition: transform 0.3s ease, box-shadow 0.3s ease; }
@@ -85,6 +85,17 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 .btn-outline { background: var(--glass); color: var(--text); border: 1px solid var(--card-border); }
 .btn-outline:hover { background: var(--input-bg); }
 
+/* --- LINK TAB SPECIFIC UI --- */
+.link-info-box { background: var(--glass); border: 1px solid var(--card-border); padding: 16px; border-radius: 16px; margin-bottom: 20px; text-align: left; }
+.link-info-box h3 { margin: 0 0 8px 0; font-size: 1.1rem; color: var(--secondary); display: flex; align-items: center; gap: 8px; }
+.link-info-box p { margin: 0 0 12px 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; }
+.code-block { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; font-family: ui-monospace, monospace; font-size: 0.85rem; color: var(--info); word-break: break-all; border: 1px solid rgba(255,255,255,0.05); }
+body.light-mode .code-block { background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.1); color: #2563EB; }
+.divider { display: flex; align-items: center; text-align: center; margin: 24px 0; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+.divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--card-border); }
+.divider:not(:empty)::before { margin-right: 1em; }
+.divider:not(:empty)::after { margin-left: 1em; }
+
 /* --- CAMERA SCANNER FIXES --- */
 .scanner-container { position: relative; border-radius: 16px; overflow: hidden; background: #000; margin-bottom: 16px; width: 100%; min-height: 250px; }
 #reader { width: 100%; border: none; }
@@ -95,7 +106,6 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 @keyframes scan { 0% { top: 0; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
 .scan-hint { color: white; margin-top: 20px; font-size: 0.9rem; font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,0.5); z-index: 11; }
 
-/* Torch Button */
 .torch-btn { position: absolute; bottom: 20px; right: 20px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 20; color: white; backdrop-filter: blur(8px); transition: all 0.3s ease; pointer-events: auto; }
 .torch-btn.active { background: #EAB308; color: #000; border-color: #EAB308; box-shadow: 0 0 15px rgba(234, 179, 8, 0.5); }
 .torch-btn:active { transform: scale(0.9); }
@@ -128,7 +138,7 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 .hidden { display: none !important; }
 .icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-@media (max-width: 480px) { .tabs { flex-direction: row; } .btn-group { flex-direction: column; } }
+@media (max-width: 480px) { .btn-group { flex-direction: column; } }
 </style>
 </head>
 <body>
@@ -149,7 +159,8 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
   <div class="tabs animate-fade">
     <button class="tab-btn active" id="tabScan" onclick="switchTab('scan', this)">Scan</button>
     <button class="tab-btn" id="tabUpload" onclick="switchTab('upload', this)">Upload</button>
-    <button class="tab-btn" id="tabGenerate" onclick="switchTab('generate', this)">Create</button>
+    <button class="tab-btn" id="tabGenerate" onclick="switchTab('generate', this)">Card</button>
+    <button class="tab-btn" id="tabLink" onclick="switchTab('link', this)">Link</button>
   </div>
 
   <div id="scan" class="card tab-content animate-fade">
@@ -186,7 +197,7 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
   <div id="generate" class="card tab-content hidden animate-fade">
     <div class="detail-group">
       <label class="detail-label">UPI ID *</label>
-      <input type="text" id="newUpiId" placeholder="e.g., name@bank" onkeyup="validateUpiLive()">
+      <input type="text" id="newUpiId" placeholder="e.g., name@bank" onkeyup="validateLive('newUpiId')">
     </div>
     <div class="detail-group">
       <label class="detail-label">Payee Name (Optional)</label>
@@ -199,7 +210,7 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 
     <div class="btn-group">
       <button class="action-btn btn-primary" id="btnGenQR" onclick="generateQR()">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg> <span id="txtGenQR">Generate QR</span>
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg> <span id="txtGenQR">Generate Card</span>
       </button>
       <button class="action-btn btn-outline" id="btnReset" onclick="resetGenerate()">
         <svg class="icon" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> 
@@ -207,7 +218,7 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
       </button>
     </div>
     
-    <div id="generatePlaceholder">Your QR will appear here</div>
+    <div id="generatePlaceholder">Your QR Card will appear here</div>
     
     <div id="qrStandee" class="qr-standee-wrapper hidden">
       <div class="qr-standee-header">
@@ -216,9 +227,7 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
         <p id="txtScanToPay" class="scan-prompt">Scan and Pay</p>
         <div id="standeeAmount" class="qr-standee-amount"></div>
       </div>
-      
       <div id="cardQrCode"></div>
-      
       <div class="qr-standee-footer">
         <span class="upi-apps">GPay • PhonePe • Paytm • BHIM</span>
         <div class="powered-by">Powered by <span>UPI</span></div>
@@ -233,6 +242,33 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
         <svg class="icon" viewBox="0 0 24 24"><path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg> <span id="txtShareGen">Share Card</span>
       </button>
     </div>
+  </div>
+
+  <div id="link" class="card tab-content hidden animate-fade">
+    <div class="link-info-box">
+      <h3 id="txtLinkTitle">
+        <svg class="icon" style="color: var(--secondary);" viewBox="0 0 24 24"><path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+        Create Shareable Links!
+      </h3>
+      <p id="txtLinkSub">Just manually add your UPI ID and Amount to our base URL to create an instant payment link.</p>
+      <div class="code-block" id="baseLinkCode">https://example.vercel.app/&lt;upi-id&gt;/&lt;amount&gt;</div>
+    </div>
+    
+    <div class="divider"><span id="txtOr">Or, Use Our Generator</span></div>
+
+    <div class="detail-group">
+      <label class="detail-label">UPI ID *</label>
+      <input type="text" id="linkUpiId" placeholder="e.g., name@bank" onkeyup="validateLive('linkUpiId')">
+    </div>
+    <div class="detail-group">
+      <label class="detail-label">Amount (Optional)</label>
+      <input type="number" id="linkAmount" placeholder="₹ 0.00">
+    </div>
+
+    <button class="action-btn btn-primary" id="btnGenLink" onclick="generateAndCopyLink()" style="margin-top: 10px;">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> 
+      <span id="txtGenLinkBtn">Create & Copy Link</span>
+    </button>
   </div>
 
   <div class="card hidden animate-fade" id="extractedCard">
@@ -257,11 +293,17 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 </div>
 
 <footer style="text-align:center; margin-top: auto; padding: 20px; font-size: 0.9rem; color: var(--text-muted); width: 100%;">
-  © <span id="year"></span> Made with ❤️ by <strong>Your Name</strong>
+  © <span id="year"></span> Made with ❤️ by <strong>Yo</strong>
 </footer>
 
 <script>
 document.getElementById("year").innerText = new Date().getFullYear();
+
+// Configuration
+const BASE_PAY_URL = "https://example.vercel.app";
+
+// Update the visually displayed base URL inside the UI block
+document.getElementById("baseLinkCode").innerText = `${BASE_PAY_URL}/<upi-id>/<amount>`;
 
 // --- Initialization & LocalStorage ---
 let currentLang = 'en';
@@ -281,21 +323,25 @@ window.addEventListener('DOMContentLoaded', () => {
 const translations = {
   en: {
     mainTitle: "UPI QR Extractor", subTitle: "Scan, extract, or create UPI codes instantly.",
-    tabScan: "Scan", tabUpload: "Upload", tabGenerate: "Create",
+    tabScan: "Scan", tabUpload: "Upload", tabGenerate: "Card", tabLink: "Link",
     txtStartCam: "Start Camera", txtStopCam: "Stop Camera", scanHint: "Align QR inside the box",
     extractTitle: "Scanned Successfully", lblUpi: "UPI ID", lblMerchant: "Merchant / Payee Name", lblAmount: "Amount",
-    txtCopy: "Copy ID", txtPay: "Pay Now", txtGenQR: "Generate QR", txtReset: "Reset",
+    txtCopy: "Copy ID", txtPay: "Pay Now", txtGenQR: "Generate Card", txtReset: "Reset",
     txtDownload: "Download Card", txtShareGen: "Share Card", uploadLabel: "Select QR Image",
-    txtScanToPay: "Scan and Pay", trustText: "100% Secure. Runs locally in your browser."
+    txtScanToPay: "Scan and Pay", trustText: "100% Secure. Runs locally in your browser.",
+    txtLinkTitle: "Create Shareable Links!", txtLinkSub: "Just manually add your UPI ID and Amount to our base URL to create an instant payment link.",
+    txtOr: "Or, Use Our Generator", txtGenLinkBtn: "Create & Copy Link"
   },
   hi: {
     mainTitle: "यूपीआई क्यूआर स्कैनर", subTitle: "तुरंत यूपीआई कोड स्कैन करें, निकालें या बनाएं।",
-    tabScan: "स्कैन", tabUpload: "अपलोड", tabGenerate: "बनाएं",
+    tabScan: "स्कैन", tabUpload: "अपलोड", tabGenerate: "कार्ड", tabLink: "लिंक",
     txtStartCam: "कैमरा चालू करें", txtStopCam: "कैमरा बंद करें", scanHint: "क्यूआर को बॉक्स के अंदर रखें",
     extractTitle: "सफलतापूर्वक स्कैन किया गया", lblUpi: "यूपीआई आईडी", lblMerchant: "व्यापारी का नाम", lblAmount: "रकम",
-    txtCopy: "कॉपी करें", txtPay: "भुगतान करें", txtGenQR: "क्यूआर बनाएं", txtReset: "रीसेट",
+    txtCopy: "कॉपी करें", txtPay: "भुगतान करें", txtGenQR: "कार्ड बनाएं", txtReset: "रीसेट",
     txtDownload: "कार्ड डाउनलोड करें", txtShareGen: "कार्ड साझा करें", uploadLabel: "क्यूआर छवि चुनें",
-    txtScanToPay: "भुगतान करने के लिए स्कैन करें", trustText: "100% सुरक्षित। आपके ब्राउज़र में चलता है।"
+    txtScanToPay: "भुगतान करने के लिए स्कैन करें", trustText: "100% सुरक्षित। आपके ब्राउज़र में चलता है।",
+    txtLinkTitle: "साझा करने योग्य लिंक बनाएं!", txtLinkSub: "त्वरित भुगतान लिंक बनाने के लिए बस हमारे बेस यूआरएल में अपनी यूपीआई आईडी और राशि जोड़ें।",
+    txtOr: "या, हमारे जेनरेटर का उपयोग करें", txtGenLinkBtn: "लिंक बनाएं और कॉपी करें"
   }
 };
 
@@ -310,7 +356,15 @@ function applyLanguage() {
   const t = translations[currentLang];
   Object.keys(t).forEach(id => {
     const el = document.getElementById(id);
-    if(el) el.innerText = t[id];
+    if(el) {
+      if(el.childNodes.length > 1 && el.tagName === "BUTTON" && !el.id.includes("tab")) {
+         el.lastElementChild.innerText = t[id];
+      } else if (el.tagName === "H3" && el.childNodes.length > 1) {
+         el.lastChild.nodeValue = " " + t[id];
+      } else {
+         el.innerText = t[id];
+      }
+    }
   });
 }
 
@@ -348,12 +402,12 @@ function switchTab(tabId, btnElement) {
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
   btnElement.classList.add('active');
   document.getElementById("extractedCard").classList.add("hidden");
-  if (tabId === 'generate' || tabId === 'upload') stopScanner();
+  if (tabId === 'generate' || tabId === 'upload' || tabId === 'link') stopScanner();
 }
 
 const upiRegex = /^[\w.-]+@[\w.-]+$/;
-function validateUpiLive() {
-  const input = document.getElementById("newUpiId");
+function validateLive(inputId) {
+  const input = document.getElementById(inputId);
   const val = input.value.trim();
   if(val.length === 0) { input.classList.remove("valid", "invalid"); } 
   else if(upiRegex.test(val)) { input.classList.add("valid"); input.classList.remove("invalid"); } 
@@ -363,7 +417,7 @@ function validateUpiLive() {
 // --- Scanner Logic Fixes ---
 let html5QrCode;
 let isScanning = false;
-let isTorchOn = false; // Torch state
+let isTorchOn = false; 
 let rawAmountVal = "";
 
 function initScanner() { if (!html5QrCode) html5QrCode = new Html5Qrcode("reader"); }
@@ -371,7 +425,6 @@ function initScanner() { if (!html5QrCode) html5QrCode = new Html5Qrcode("reader
 function startScanner() {
   initScanner();
   document.getElementById("extractedCard").classList.add("hidden");
-  
   document.getElementById("scannerWrapper").classList.remove("hidden");
   document.getElementById("btnStartCam").classList.add("hidden");
   document.getElementById("btnStopCam").classList.remove("hidden");
@@ -385,7 +438,6 @@ function startScanner() {
     (errorMessage) => {}
   ).then(() => {
     isScanning = true;
-    // Reveal torch button once camera starts successfully
     document.getElementById("btnTorch").classList.remove("hidden");
   }).catch(err => {
     document.getElementById("scannerWrapper").classList.add("hidden");
@@ -411,7 +463,6 @@ async function stopScanner() {
   }
 }
 
-// --- Toggle Torch ---
 function toggleTorch() {
   if (html5QrCode && isScanning) {
     isTorchOn = !isTorchOn;
@@ -464,7 +515,7 @@ function openUPI() {
   window.open(link, "_self"); 
 }
 
-// --- Generate Logic ---
+// --- Generate Card Logic ---
 function generateQR() {
   const pa = document.getElementById("newUpiId").value.trim().toLowerCase();
   const pn = document.getElementById("newName").value.trim();
@@ -481,12 +532,10 @@ function generateQR() {
   document.getElementById("cardQrCode").innerHTML = "";
   document.getElementById("generatePlaceholder").classList.add("hidden");
 
-  // Update Standee Header text
   document.getElementById("standeeName").innerText = pn ? pn : (currentLang === 'en' ? "UPI Payment" : "यूपीआई भुगतान");
   document.getElementById("standeeUpiId").innerText = pa;
   document.getElementById("standeeAmount").innerText = am ? `₹ ${am}` : "";
 
-  // Pure, Untouched, Highly Scannable Base QR Code
   const qrCodeInstance = new QRCodeStyling({
     width: 240,
     height: 240,
@@ -505,20 +554,38 @@ function generateQR() {
   document.getElementById("qrStandee").scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
-// --- Reset Logic ---
 function resetGenerate() {
   document.getElementById("newUpiId").value = "";
   document.getElementById("newName").value = "";
   document.getElementById("newAmount").value = "";
-  
   document.getElementById("newUpiId").classList.remove("valid", "invalid");
-  
   document.getElementById("qrStandee").classList.add("hidden");
   document.getElementById("genActions").classList.add("hidden");
   document.getElementById("generatePlaceholder").classList.remove("hidden");
-  
-  // Scroll back to top of form
   document.getElementById("generate").scrollIntoView({ behavior: "smooth" });
+}
+
+// --- Generate Sharable Link Logic ---
+function generateAndCopyLink() {
+  const pa = document.getElementById("linkUpiId").value.trim().toLowerCase();
+  const am = document.getElementById("linkAmount").value.trim();
+  
+  if (!upiRegex.test(pa)) { 
+    showMessage(currentLang === 'en' ? "Enter a valid UPI ID" : "मान्य यूपीआई आईडी दर्ज करें", "error"); 
+    document.getElementById("linkUpiId").classList.add("invalid"); return; 
+  }
+  
+  // Construct the URL based on user variables
+  let finalUrl = `${BASE_PAY_URL}/${encodeURIComponent(pa)}`;
+  if (am) {
+    finalUrl += `/${encodeURIComponent(am)}`;
+  }
+  
+  navigator.clipboard.writeText(finalUrl).then(() => { 
+    showMessage(currentLang === 'en' ? "Payment Link Copied!" : "भुगतान लिंक कॉपी किया गया!", "success"); 
+  }).catch(() => {
+    showMessage(currentLang === 'en' ? "Failed to copy link" : "लिंक कॉपी करने में विफल", "error");
+  });
 }
 
 // --- High-Resolution Export Engine ---
