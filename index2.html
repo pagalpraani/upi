@@ -11,13 +11,15 @@
 
 <style>
 :root {
-  var(--primary): #1E3A8A;
-  --primary: #1E3A8A;
-  --primary-hover: #2563EB;
-  --secondary: #10B981;
+  /* UPInspect Brand Colors */
+  --primary: #1E3A8A;       
+  --primary-hover: #2563EB; 
+  --secondary: #10B981;     
   --secondary-hover: #059669;
   --danger: #EF4444;
   --info: #3B82F6;
+  
+  /* Theme Backgrounds */
   --bg-gradient: linear-gradient(135deg, #0F172A, #1e293b);
   --card: rgba(255, 255, 255, 0.03);
   --card-border: rgba(255, 255, 255, 0.1);
@@ -39,7 +41,7 @@ body.light-mode {
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-body { margin: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg-gradient); color: var(--text); display: flex; flex-direction: column; align-items: center; padding: 16px; min-height: 100vh; padding-bottom: 90px; /* Space for bottom nav */ transition: background 0.4s ease, color 0.4s ease; opacity: 0; animation: pageLoad 0.6s ease forwards; }
+body { margin: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg-gradient); color: var(--text); display: flex; flex-direction: column; align-items: center; padding: 16px; min-height: 100vh; padding-bottom: 90px; transition: background 0.4s ease, color 0.4s ease; opacity: 0; animation: pageLoad 0.6s ease forwards; }
 
 @keyframes pageLoad { to { opacity: 1; } }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -55,6 +57,9 @@ body { margin: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; ba
 .brand-logo { width: 28px; height: 28px; color: var(--primary-hover); }
 .brand-lens { color: var(--secondary); }
 h1 { margin: 0; font-weight: 800; font-size: 1.7rem; letter-spacing: -0.5px; }
+
+/* GLOBAL ICON STYLE */
+.icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 /* VIEW CONTAINERS */
 .app-view { display: none; }
@@ -105,6 +110,8 @@ button.action-btn:active { transform: scale(0.97); }
 #reader video { object-fit: cover; border-radius: 16px; }
 .scan-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 10; }
 .scan-box { width: 70%; max-width: 250px; aspect-ratio: 1/1; border-radius: 16px; border: 2px solid var(--secondary); box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), 0 0 0 4000px rgba(0,0,0,0.5); }
+.scan-laser { width: 100%; height: 2px; background: var(--secondary); box-shadow: 0 0 10px var(--secondary); position: absolute; top: 0; animation: scan 2s infinite linear; }
+@keyframes scan { 0% { top: 0; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
 
 /* STANDEE CARD & UTILS */
 .qr-standee-wrapper { background: #FFFFFF; border-radius: 16px; padding: 24px; width: 100%; max-width: 320px; margin: 20px auto; color: #0F172A; text-align: center; border: 1px solid #E2E8F0; }
@@ -124,7 +131,6 @@ button.action-btn:active { transform: scale(0.97); }
 .success { background: rgba(16, 185, 129, 0.95); color: white; border: 1px solid rgba(16, 185, 129, 1); }
 .error { background: rgba(239, 68, 68, 0.95); color: white; border: 1px solid rgba(239, 68, 68, 1); }
 .hidden { display: none !important; }
-.icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 @media (max-width: 480px) { .btn-group { flex-direction: column; } }
 </style>
@@ -145,7 +151,7 @@ button.action-btn:active { transform: scale(0.97); }
         <circle cx="16" cy="16" r="4" class="brand-lens" stroke-width="2.5" />
         <line x1="18.5" y1="18.5" x2="22" y2="22" class="brand-lens" stroke-width="2.5" />
       </svg>
-      <h1 id="mainTitle" style="font-size: 1.2rem;">UPInspect</h1>
+      <h1 style="font-size: 1.2rem;">UPInspect</h1>
     </div>
     <button class="toggle-btn" onclick="toggleLang()" id="langBtn">EN | हिंदी</button>
   </div>
@@ -164,7 +170,7 @@ button.action-btn:active { transform: scale(0.97); }
       </div>
       <div class="feature-card" onclick="navToTools('createTab')">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-        <h4 id="txtGridCreate">Create & Receive</h4>
+        <h4 id="txtGridCreate">Create Links & QR</h4>
         <p id="txtGridCreateSub">Cards & Pay Links</p>
       </div>
     </div>
@@ -193,9 +199,18 @@ button.action-btn:active { transform: scale(0.97); }
         <div class="scan-overlay"><div class="scan-box"></div></div>
       </div>
       <div class="btn-group">
-        <button class="action-btn btn-primary" id="btnStartCam" onclick="startScanner()"><span id="txtStartCam">Live Camera</span></button>
-        <button class="action-btn btn-danger hidden" id="btnStopCam" onclick="stopScanner()"><span id="txtStopCam">Stop Camera</span></button>
-        <button class="action-btn btn-outline" onclick="document.getElementById('qrFile').click()"><span id="txtUploadImg">Upload Gallery</span></button>
+        <button class="action-btn btn-primary" onclick="startScanner()">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          <span id="txtStartCam">Live Camera</span>
+        </button>
+        <button class="action-btn btn-danger hidden" id="btnStopCam" onclick="stopScanner()">
+          <svg class="icon" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+          <span id="txtStopCam">Stop Camera</span>
+        </button>
+        <button class="action-btn btn-outline" onclick="document.getElementById('qrFile').click()">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <span id="txtUploadImg">Upload Gallery</span>
+        </button>
         <input type="file" id="qrFile" class="hidden" accept="image/*">
       </div>
     </div>
@@ -204,35 +219,59 @@ button.action-btn:active { transform: scale(0.97); }
       <div class="detail-group"><label class="detail-label">UPI ID *</label><input type="text" id="newUpiId" placeholder="e.g., name@bank" onkeyup="validateLive()"></div>
       <div class="detail-group"><label class="detail-label">Merchant Name (Optional)</label><input type="text" id="newName" placeholder="e.g., Rahul Traders"></div>
       <div class="detail-group"><label class="detail-label">Amount (Optional)</label><input type="number" id="newAmount" placeholder="₹ 0.00"></div>
+      
       <div class="btn-group">
-        <button class="action-btn btn-primary" onclick="generateQRCard()"><span id="txtGenQR">Generate Card</span></button>
-        <button class="action-btn btn-info" onclick="generateLink()"><span id="txtGenLinkBtn">Copy Link</span></button>
-        <button class="action-btn btn-outline" style="flex: 0.5; min-width: 80px;" onclick="resetCreateForm()"><span>Reset</span></button>
+        <button class="action-btn btn-primary" onclick="generateQRCard()">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+          <span id="txtGenQR">Generate Card</span>
+        </button>
+        <button class="action-btn btn-info" onclick="generateLink()">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+          <span id="txtGenLinkBtn">Copy Link</span>
+        </button>
+        <button class="action-btn btn-outline" style="flex: 0.5; min-width: 80px;" onclick="resetCreateForm()">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </button>
       </div>
       
       <div id="qrStandee" class="qr-standee-wrapper hidden">
         <div class="qr-standee-header">
-          <h3 id="standeeName">UPI Payment</h3>
-          <p id="standeeUpiId" class="qr-standee-upi"></p>
-          <p class="qr-standee-amount" id="standeeAmount"></p>
+          <h3 style="color:var(--primary); font-weight: 800; font-size:1.25rem; margin:0;" id="standeeName">UPI Payment</h3>
+          <p style="margin:4px 0 0 0; color:#64748B; font-family:monospace; font-weight:600; font-size:0.85rem;" id="standeeUpiId"></p>
+          <p style="color:#0F172A; font-weight:800; font-size:1.2rem; margin-top:4px;" id="standeeAmount"></p>
         </div>
         <div id="cardQrCode"></div>
       </div>
       
       <div class="btn-group hidden" id="cardActions">
-        <button class="action-btn btn-success" onclick="downloadStandee()"><span id="txtDownload">Save Image</span></button>
-        <button class="action-btn btn-info" onclick="shareStandee()"><span id="txtShareGen">Share Image</span></button>
+        <button class="action-btn btn-success" onclick="downloadStandee()">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          <span id="txtDownload">Save Image</span>
+        </button>
+        <button class="action-btn btn-info" onclick="shareStandee()">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+          <span id="txtShareGen">Share Image</span>
+        </button>
       </div>
     </div>
 
     <div class="card hidden animate-fade" id="extractedCard" style="border: 2px solid var(--secondary);">
-      <h3 id="extractTitle" style="margin-top: 0; color: var(--secondary); text-align: center;">Payment Verified</h3>
+      <h3 style="margin-top: 0; color: var(--secondary); text-align: center; display:flex; align-items:center; justify-content:center; gap:8px;">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span id="extractTitle">Payment Verified</span>
+      </h3>
       <div class="detail-group"><span class="detail-label" id="lblUpi">UPI ID</span><div class="detail-value" id="valUpiId" style="color: var(--primary-hover); font-family: monospace;">-</div></div>
       <div class="detail-group"><span class="detail-label" id="lblMerchant">Merchant Name</span><div class="detail-value" id="valMerchant">-</div></div>
       <div class="detail-group" id="groupAmount"><span class="detail-label" id="lblAmount">Fixed Amount</span><div class="detail-value" id="valAmount" style="color: var(--secondary); font-size: 1.3rem; font-weight: 800;">-</div></div>
       <div class="btn-group">
-        <button class="action-btn btn-outline" onclick="copyUPI()"><span id="txtCopy">Copy ID</span></button>
-        <button class="action-btn btn-success" onclick="openUPI()"><span id="txtPay">Pay Now</span></button>
+        <button class="action-btn btn-outline" onclick="copyUPI()">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          <span id="txtCopy">Copy ID</span>
+        </button>
+        <button class="action-btn btn-success" onclick="openUPI()">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          <span id="txtPay">Pay Now</span>
+        </button>
       </div>
     </div>
   </div>
@@ -293,10 +332,9 @@ window.addEventListener('DOMContentLoaded', () => {
     const am = urlParams.get('am') || "";
     const pn = urlParams.get('pn') || "N/A";
     
-    // Auto-route to Tools -> Scan Tab (hiding the creation elements)
     switchAppView('tools');
-    document.querySelector('.tabs').classList.add('hidden'); // Hide tool tabs
-    document.getElementById('bottomNav').classList.add('hidden'); // Hide bottom nav for pure payment flow
+    document.querySelector('.tabs').classList.add('hidden');
+    document.getElementById('bottomNav').classList.add('hidden');
     
     document.getElementById("valUpiId").innerText = pa;
     document.getElementById("valMerchant").innerText = pn;
@@ -316,7 +354,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // --- App Routing (Bottom Nav) ---
 function switchAppView(viewName) {
-  // Stop camera if navigating away from tools
   if(viewName !== 'tools') stopScanner();
 
   document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
@@ -335,7 +372,6 @@ function switchAppView(viewName) {
   window.scrollTo(0,0);
 }
 
-// Jump from Home Dashboard to specific tool
 function navToTools(toolTabId) {
   switchAppView('tools');
   const btnId = toolTabId === 'scanTab' ? 'tabScan' : 'tabCreate';
@@ -356,7 +392,7 @@ function switchToolTab(tabId, btnElement) {
 const translations = {
   en: {
     txtHeroTitle: "Decode. Verify. Pay.", txtHeroSub: "Extract UPI IDs from any QR code and complete your payments with absolute clarity.",
-    txtGridScan: "Scan & Pay", txtGridScanSub: "Inspect QRs safely", txtGridCreate: "Create & Receive", txtGridCreateSub: "Cards & Pay Links",
+    txtGridScan: "Scan & Pay", txtGridScanSub: "Inspect QRs safely", txtGridCreate: "Create Links & QR", txtGridCreateSub: "Payment Links & QR",
     txtTrustTitle: "Security First", txtTrustDesc: "UPInspect runs 100% locally in your browser. We never store your UPI ID, and your payment data never touches a server.",
     txtNavHome: "Home", txtNavTools: "Tools", txtNavAbout: "About",
     txtTabScan: "Scan & Pay", txtTabCreate: "Create Links & QR",
@@ -371,7 +407,7 @@ const translations = {
   },
   hi: {
     txtHeroTitle: "डिकोड। सत्यापित करें। भुगतान करें।", txtHeroSub: "किसी भी क्यूआर कोड से यूपीआई आईडी निकालें और पूर्ण स्पष्टता के साथ अपना भुगतान पूरा करें।",
-    txtGridScan: "स्कैन और भुगतान", txtGridScanSub: "सुरक्षित निरीक्षण", txtGridCreate: "बनाएं और प्राप्त करें", txtGridCreateSub: "कार्ड और लिंक",
+    txtGridScan: "स्कैन और भुगतान", txtGridScanSub: "सुरक्षित निरीक्षण", txtGridCreate: "लिंक और क्यूआर बनाएं", txtGridCreateSub: "कार्ड और लिंक",
     txtTrustTitle: "सुरक्षा पहले", txtTrustDesc: "UPInspect आपके ब्राउज़र में 100% स्थानीय रूप से चलता है। हम कभी भी डेटा स्टोर नहीं करते हैं।",
     txtNavHome: "होम", txtNavTools: "उपकरण", txtNavAbout: "हमारे बारे में",
     txtTabScan: "स्कैन और भुगतान", txtTabCreate: "लिंक और क्यूआर बनाएं",
@@ -393,10 +429,7 @@ function applyLanguage() {
   const t = translations[currentLang];
   Object.keys(t).forEach(id => {
     const el = document.getElementById(id);
-    if(el) {
-      if(el.childNodes.length > 1 && (el.tagName === "BUTTON" || el.tagName === "H3")) { el.lastElementChild ? el.lastElementChild.innerText = t[id] : el.lastChild.nodeValue = " " + t[id]; } 
-      else { el.innerText = t[id]; }
-    }
+    if(el) { el.innerText = t[id]; }
   });
   if (isPaymentLinkMode) document.getElementById("extractTitle").innerText = t.txtPaymentRequest;
 }
