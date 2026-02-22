@@ -38,20 +38,7 @@ body.light-mode {
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-body {
-  margin: 0;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: var(--bg-gradient);
-  color: var(--text);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 16px;
-  min-height: 100vh;
-  transition: background 0.4s ease, color 0.4s ease;
-  opacity: 0;
-  animation: pageLoad 0.6s ease forwards;
-}
+body { margin: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg-gradient); color: var(--text); display: flex; flex-direction: column; align-items: center; padding: 16px; min-height: 100vh; transition: background 0.4s ease, color 0.4s ease; opacity: 0; animation: pageLoad 0.6s ease forwards; }
 
 @keyframes pageLoad { to { opacity: 1; } }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -96,32 +83,25 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 .btn-danger { background: var(--danger); color: white; }
 .btn-info { background: var(--info); color: white; }
 
-.scanner-container { position: relative; border-radius: 16px; overflow: hidden; background: #000; margin-bottom: 16px; }
+/* --- CAMERA SCANNER FIXES --- */
+.scanner-container { position: relative; border-radius: 16px; overflow: hidden; background: #000; margin-bottom: 16px; width: 100%; min-height: 250px; }
 #reader { width: 100%; border: none; }
+#reader video { object-fit: cover; border-radius: 16px; }
 .scan-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 10; }
-.scan-box { width: 200px; height: 200px; border-radius: 16px; position: relative; border: 2px solid var(--secondary); box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), 0 0 0 4000px rgba(0,0,0,0.5); }
+.scan-box { width: 70%; max-width: 250px; aspect-ratio: 1/1; border-radius: 16px; position: relative; border: 2px solid var(--secondary); box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), 0 0 0 4000px rgba(0,0,0,0.5); }
 .scan-laser { width: 100%; height: 2px; background: var(--secondary); box-shadow: 0 0 10px var(--secondary); position: absolute; top: 0; animation: scan 2s infinite linear; }
 @keyframes scan { 0% { top: 0; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
 .scan-hint { color: white; margin-top: 20px; font-size: 0.9rem; font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,0.5); z-index: 11; }
 
 #generatePlaceholder { padding: 40px 20px; border: 2px dashed var(--card-border); border-radius: 16px; margin: 20px 0; color: var(--text-muted); text-align: center; }
 
-/* --- THE NEW MERCHANT STANDEE CARD --- */
-.qr-standee-wrapper {
-  background: #FFFFFF;
-  border-radius: 16px;
-  padding: 24px;
-  width: 100%;
-  max-width: 320px;
-  margin: 20px auto;
-  color: #0F172A;
-  box-shadow: 0 12px 32px rgba(0,0,0,0.15);
-  font-family: 'Inter', sans-serif;
-  border: 1px solid #E2E8F0;
-}
+/* --- MERCHANT STANDEE CARD --- */
+.qr-standee-wrapper { background: #FFFFFF; border-radius: 16px; padding: 24px; width: 100%; max-width: 320px; margin: 20px auto; color: #0F172A; box-shadow: 0 12px 32px rgba(0,0,0,0.15); font-family: 'Inter', sans-serif; border: 1px solid #E2E8F0; }
 .qr-standee-header { text-align: center; margin-bottom: 16px; }
 .qr-standee-header h3 { margin: 0; font-size: 1.25rem; color: #0F172A; font-weight: 700; word-break: break-word; }
-.qr-standee-header p { margin: 4px 0 0 0; color: #64748B; font-size: 0.9rem; font-weight: 500; }
+/* Added UPI ID Styling */
+.qr-standee-upi { margin: 4px 0 0 0; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.85rem; color: #6C63FF; font-weight: 600; word-break: break-all; }
+.qr-standee-header p.scan-prompt { margin: 10px 0 0 0; color: #64748B; font-size: 0.9rem; font-weight: 500; }
 .qr-standee-amount { color: #10B981; font-size: 1.1rem; font-weight: 700; margin-top: 4px; }
 
 #cardQrCode { display: flex; justify-content: center; background: #FFFFFF; border-radius: 12px; padding: 10px; border: 2px solid #F1F5F9; }
@@ -131,7 +111,6 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 .upi-apps { display: block; font-size: 0.75rem; color: #64748B; font-weight: 600; margin-bottom: 6px; letter-spacing: 0.5px; }
 .powered-by { font-size: 1rem; color: #0F172A; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; }
 .powered-by span { background: #0F172A; color: #FFFFFF; padding: 2px 8px; border-radius: 6px; font-weight: 800; font-style: italic; font-size: 0.9rem; }
-/* -------------------------------------- */
 
 .trust-badge { display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; }
 .trust-badge svg { width: 16px; height: 16px; fill: currentColor; }
@@ -218,7 +197,8 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
     <div id="qrStandee" class="qr-standee-wrapper hidden">
       <div class="qr-standee-header">
         <h3 id="standeeName">UPI Payment</h3>
-        <p id="txtScanToPay">Scan and Pay</p>
+        <p id="standeeUpiId" class="qr-standee-upi"></p>
+        <p id="txtScanToPay" class="scan-prompt">Scan and Pay</p>
         <div id="standeeAmount" class="qr-standee-amount"></div>
       </div>
       
@@ -262,7 +242,7 @@ button.action-btn:active::after { width: 300px; height: 300px; opacity: 0; }
 </div>
 
 <footer style="text-align:center; margin-top: auto; padding: 20px; font-size: 0.9rem; color: var(--text-muted); width: 100%;">
-  © <span id="year"></span> Made with ❤️ by <strong>two</strong>
+  © <span id="year"></span> Made with ❤️ by <strong>three</strong>
 </footer>
 
 <script>
@@ -365,7 +345,7 @@ function validateUpiLive() {
   else { input.classList.add("invalid"); input.classList.remove("valid"); }
 }
 
-// --- Scanner Logic ---
+// --- Scanner Logic Fixes ---
 let html5QrCode;
 let isScanning = false;
 let rawAmountVal = "";
@@ -376,26 +356,40 @@ function startScanner() {
   initScanner();
   document.getElementById("extractedCard").classList.add("hidden");
   
+  // CRITICAL FIX: Make the wrapper visible BEFORE starting the camera
+  // The library needs to see the container's physical dimensions to render properly.
+  document.getElementById("scannerWrapper").classList.remove("hidden");
+  document.getElementById("btnStartCam").classList.add("hidden");
+  document.getElementById("btnStopCam").classList.remove("hidden");
+  
+  // Dynamically calculate scanning box size for smaller mobile screens
+  let qrboxSize = window.innerWidth < 350 ? 180 : 250;
+
   html5QrCode.start(
     { facingMode: "environment" }, 
-    { fps: 10, qrbox: { width: 250, height: 250 } },
+    { fps: 10, qrbox: { width: qrboxSize, height: qrboxSize } },
     (decodedText) => { extractUPI(decodedText); stopScanner(); if(navigator.vibrate) navigator.vibrate(200); },
     (errorMessage) => {}
   ).then(() => {
     isScanning = true;
-    document.getElementById("scannerWrapper").classList.remove("hidden");
-    document.getElementById("btnStartCam").classList.add("hidden");
-    document.getElementById("btnStopCam").classList.remove("hidden");
   }).catch(err => {
-    showMessage(currentLang === 'en' ? "Camera access denied. Please allow permission." : "कैमरा अनुमति अस्वीकृत। अनुमति दें।", "error");
+    // If it fails, revert the UI
     document.getElementById("scannerWrapper").classList.add("hidden");
     document.getElementById("btnStartCam").classList.remove("hidden");
+    document.getElementById("btnStopCam").classList.add("hidden");
+    showMessage(currentLang === 'en' ? "Camera access denied or unavailable." : "कैमरा अनुमति अस्वीकृत या उपलब्ध नहीं।", "error");
   });
 }
 
 async function stopScanner() {
   if (html5QrCode && isScanning) {
-    try { await html5QrCode.stop(); isScanning = false; document.getElementById("scannerWrapper").classList.add("hidden"); document.getElementById("btnStartCam").classList.remove("hidden"); document.getElementById("btnStopCam").classList.add("hidden"); } catch(err) {}
+    try { 
+      await html5QrCode.stop(); 
+      isScanning = false; 
+      document.getElementById("scannerWrapper").classList.add("hidden"); 
+      document.getElementById("btnStartCam").classList.remove("hidden"); 
+      document.getElementById("btnStopCam").classList.add("hidden"); 
+    } catch(err) {}
   }
 }
 
@@ -455,6 +449,7 @@ function generateQR() {
 
   // Update Standee Header text
   document.getElementById("standeeName").innerText = pn ? pn : (currentLang === 'en' ? "UPI Payment" : "यूपीआई भुगतान");
+  document.getElementById("standeeUpiId").innerText = pa; // Inject the UPI ID into the UI
   document.getElementById("standeeAmount").innerText = am ? `₹ ${am}` : "";
 
   // Pure, Untouched, Highly Scannable Base QR Code
@@ -463,14 +458,13 @@ function generateQR() {
     height: 240,
     type: "canvas",
     data: upiString,
-    qrOptions: { errorCorrectionLevel: 'M' }, // Medium error correction = faster scanning
+    qrOptions: { errorCorrectionLevel: 'M' }, 
     dotsOptions: { color: "#000000", type: "square" },
     backgroundOptions: { color: "#FFFFFF" }
   });
 
   qrCodeInstance.append(document.getElementById("cardQrCode"));
   
-  // Show the complete Standee Card
   document.getElementById("qrStandee").classList.remove("hidden");
   document.getElementById("genActions").classList.remove("hidden");
   
@@ -481,19 +475,17 @@ function generateQR() {
 // --- High-Resolution Export Engine ---
 async function getCardBlob() {
   const cardElement = document.getElementById("qrStandee");
-  // html2canvas takes a snapshot of the styled HTML div and turns it into an image
   const canvas = await html2canvas(cardElement, { 
-    scale: 3, // Multiplies resolution by 3 for crisp printing/sharing
+    scale: 3, 
     backgroundColor: "#FFFFFF",
     logging: false
   });
-  
   return new Promise(resolve => canvas.toBlob(resolve, "image/png"));
 }
 
 async function downloadStandee() {
   const btn = document.getElementById("btnDownload");
-  btn.disabled = true; // Prevent double clicks
+  btn.disabled = true; 
   try {
     const blob = await getCardBlob();
     const url = URL.createObjectURL(blob);
