@@ -10,11 +10,16 @@ import { switchAppView, navToTools,
          switchToolTab }                  from './router.js';
 import { startScanner, stopScanner,
          initFileUploadListener }         from './scanner.js';
-import { copyUPI, openUPI }              from './extractor.js';
+import { copyUPI, openUPI,
+         renderExtractedCard }            from './extractor.js';
 import { validateUpiLive, generateQRCard,
          generateLink, resetCreateForm }  from './generator.js';
 import { downloadStandee, shareStandee } from './share.js';
-import { renderExtractedCard }            from './extractor.js';
+import { showPayLinkSections,
+         plStartScanner, plStopScanner, plInitFileUpload,
+         plCopyUPI, plOpenUPI,
+         plValidateUpiLive, plGenerateQRCard, plGenerateLink,
+         plDownloadStandee, plShareStandee }  from './paylink.js';
 
 // ─── Boot ──────────────────────────────────────────────────
 
@@ -40,6 +45,8 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('bottomNav').classList.add('hidden');
 
     renderExtractedCard({ pa, pn, am });
+    showPayLinkSections();
+    plInitFileUpload();
   }
 
   // 3. Apply translations
@@ -87,6 +94,17 @@ function exposeGlobals() {
     // Share
     downloadStandee,
     shareStandee,
+
+    // Payment-link page extras
+    plStartScanner,
+    plStopScanner,
+    plCopyUPI,
+    plOpenUPI,
+    plValidateUpiLive,
+    plGenerateQRCard,
+    plGenerateLink,
+    plDownloadStandee,
+    plShareStandee,
   });
 }
 
