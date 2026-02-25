@@ -27,7 +27,7 @@ export const translations = {
     txtTabCreate: 'Create Links & QR',
 
     // Scanner buttons
-    txtStartCam:  'Live Camera',
+    txtStartCam:  'Scan QR',
     txtStopCam:   'Stop',
     txtUploadImg: 'Upload QR',
 
@@ -37,7 +37,7 @@ export const translations = {
     lblUpi:     'UPI ID',
     lblMerchant:'Merchant',
     lblAmount:  'Fixed Amount',
-    txtCopy:    'Copy ID',
+    txtCopy:    'Copy UPI ID',
     txtPay:     'Pay Now',
 
     // Generator
@@ -79,7 +79,7 @@ export const translations = {
     txtTabCreate: 'लिंक और क्यूआर बनाएं',
 
     // Scanner buttons
-    txtStartCam:  'लाइव कैमरा',
+    txtStartCam:  'क्यूआर स्कैन करें',
     txtStopCam:   'बंद करें',
     txtUploadImg: 'क्यूआर अपलोड',
 
@@ -89,7 +89,7 @@ export const translations = {
     lblUpi:     'यूपीआई आईडी',
     lblMerchant:'व्यापारी',
     lblAmount:  'निश्चित राशि',
-    txtCopy:    'कॉपी करें',
+    txtCopy:    'यूपीआई आईडी कॉपी करें',
     txtPay:     'भुगतान करें',
 
     // Generator
