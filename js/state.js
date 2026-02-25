@@ -1,0 +1,17 @@
+// ============================================================
+// state.js — Shared application state & constants
+// UPInspect v2.0
+// ============================================================
+
+export const BASE_PAY_URL = "https://pagalpraani.github.io/upi/index2.html";
+
+// Strict UPI ID format: localpart@provider (provider must be letters only)
+export const UPI_REGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z]{2,}$/;
+
+export const state = {
+  currentLang:       'en',
+  isPaymentLinkMode: false,
+  isScanning:        false,
+  rawAmountVal:      '',
+  html5QrCode:       null,
+};
