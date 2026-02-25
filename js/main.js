@@ -37,10 +37,13 @@ window.addEventListener('DOMContentLoaded', () => {
     const pn = params.get('pn') || 'Unknown';
     state.rawAmountVal = am;
 
-    // Show tools view but hide nav & tabs — looks like a standalone page
+    // Show tools view but hide nav, tabs AND the scan/create tab cards
+    // — only the verified card + two action buttons should show
     switchAppView('tools');
     document.getElementById('toolTabs').classList.add('hidden');
     document.getElementById('bottomNav').classList.add('hidden');
+    document.getElementById('scanTab').classList.add('hidden');
+    document.getElementById('createTab').classList.add('hidden');
 
     // Populate the verified card
     renderExtractedCard({ pa, pn, am });
