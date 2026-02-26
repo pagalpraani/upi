@@ -312,6 +312,7 @@
   flex-direction: column;
   gap: 10px;
   margin-top: 14px;
+  margin-bottom: 24px;
   animation: fadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
