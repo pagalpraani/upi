@@ -215,19 +215,36 @@
       <!-- Generated QR Standee -->
       <div id="qrStandee" class="standee-outer hidden">
         <div class="qr-standee">
-          <div class="standee-logo-row">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0A2463" stroke-width="2">
-              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-            </svg>
-            <span>UPINSPECT</span>
+
+          <!-- Header: name, UPI, scan prompt, amount -->
+          <div class="qr-standee-header">
+            <h3 id="standeeName">UPI Payment</h3>
+            <p  id="standeeUpiId" class="qr-standee-upi"></p>
+            <p  class="scan-prompt">Scan and Pay</p>
+            <div id="standeeAmount" class="qr-standee-amount"></div>
           </div>
-          <p class="standee-name"   id="standeeName">UPI Payment</p>
-          <p class="standee-upi"    id="standeeUpiId"></p>
-          <p class="standee-amount" id="standeeAmount"></p>
+
+          <!-- QR code -->
           <div id="cardQrCode"></div>
-          <p class="standee-scan-hint">Scan to pay securely</p>
+
+          <!-- Footer -->
+          <div class="qr-standee-footer">
+            <span class="upi-apps">GPay &bull; PhonePe &bull; Paytm &bull; BHIM</span>
+            <div class="powered-by">
+              Powered by
+              <!-- Same logo as top-bar, forced dark for white card -->
+              <div class="standee-brand-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3"  y="3"  width="7" height="7" rx="1.5"/>
+                  <rect x="14" y="3"  width="7" height="7" rx="1.5"/>
+                  <rect x="3"  y="14" width="7" height="7" rx="1.5"/>
+                  <path d="M14 14h3m0 0v3m0-3 4 4"/>
+                </svg>
+              </div>
+              <span>UPInspect</span>
+            </div>
+          </div>
+
         </div>
       </div>
 
