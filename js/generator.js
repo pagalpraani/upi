@@ -86,17 +86,18 @@ export function generateQRCard() {
   $('standeeUpiId').textContent  = pa;
   $('standeeAmount').textContent = am ? `₹ ${parseFloat(am).toFixed(2)}` : '';
 
-  // Clear previous QR and render new one
+  // Clear previous QR and render at 5× resolution (1200px) for crisp saves.
+  // CSS in #cardQrCode canvas caps the visual size to 240px.
   $('cardQrCode').innerHTML = '';
   new QRCodeStyling({
-    width:  240,
-    height: 240,
+    width:  1200,
+    height: 1200,
     type:   'canvas',
     data:   upiString,
-    qrOptions:         { errorCorrectionLevel: 'M' },
+    qrOptions:         { errorCorrectionLevel: 'H' },
     dotsOptions:       { color: '#000000', type: 'square' },
     backgroundOptions: { color: '#FFFFFF' },
-    margin: 0,
+    margin: 4,
   }).append($('cardQrCode'));
 
   // Restore button after short delay (QR renders async)
