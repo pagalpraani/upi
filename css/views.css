@@ -6,7 +6,7 @@
 
 /* ─── Home View ─── */
 .hero {
-  padding: 8px 0 32px;
+  padding: 24px 0 20px;
   text-align: center;
 }
 
@@ -26,9 +26,9 @@
 }
 
 .hero h2 {
-  font-size: clamp(1.8rem, 6vw, 2.4rem);
+  font-size: clamp(1.9rem, 6vw, 2.5rem);
   font-weight: 700;
-  margin: 0 0 12px;
+  margin: 0 0 14px;
   line-height: 1.15;
   letter-spacing: -0.5px;
 }
@@ -37,67 +37,156 @@
 
 .hero-sub {
   color: var(--text-muted);
-  font-size: 0.95rem;
+  font-size: 0.97rem;
   line-height: 1.65;
   max-width: 380px;
-  margin: 0 auto 32px;
+  margin: 0 auto 18px;
 }
 
-.feature-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 18px;
 }
 
-.feature-card {
+.hero-pill {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
   background: var(--surface);
   border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 12px;
+}
+
+.hero-intent {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+  margin: 0 0 28px;
+}
+
+/* CTA Buttons */
+.home-cta-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.home-cta-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 16px 18px;
   border-radius: var(--radius);
-  padding: 20px 16px;
-  text-align: center;
+  border: 1px solid var(--border);
   cursor: pointer;
   transition: all 0.22s;
+  text-align: left;
+  font-family: var(--font-body);
   position: relative;
   overflow: hidden;
 }
 
-/* Hover shimmer */
-.feature-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, var(--accent-dim), transparent 60%);
-  opacity: 0;
-  transition: opacity 0.3s;
-}
+.home-cta-btn:active { transform: scale(0.98); }
 
-.feature-card:hover::before,
-.feature-card:active::before { opacity: 1; }
-.feature-card:active { transform: scale(0.97); }
-
-.feature-card svg {
-  width: 28px;
-  height: 28px;
-  stroke: var(--accent);
-  fill: none;
+.home-cta-btn svg {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
   stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  margin-bottom: 10px;
 }
 
-.feature-card h4 {
-  margin: 0 0 4px;
-  font-size: 0.92rem;
+.home-cta-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-mid));
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 20px rgba(27,79,196,0.35);
+}
+
+.home-cta-secondary {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border-accent);
+}
+
+.home-cta-secondary:hover { background: var(--surface-hover); }
+
+.cta-title {
+  display: block;
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+
+.cta-sub {
+  display: block;
+  font-size: 0.78rem;
+  opacity: 0.75;
+  margin-top: 2px;
+}
+
+/* What You Can Do */
+.home-section-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 14px;
+}
+
+.home-section-title {
+  margin: 0 0 14px;
+  font-size: 0.88rem;
   font-weight: 700;
   color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: var(--font-mono);
 }
 
-.feature-card p {
-  margin: 0;
-  font-size: 0.78rem;
+.check-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 14px;
+}
+
+.check-list li {
+  padding: 6px 0;
+  font-size: 0.88rem;
   color: var(--text-muted);
+  line-height: 1.55;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.check-list li::before {
+  content: "✔";
+  color: var(--accent);
+  font-size: 0.78rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.check-list-sm li {
+  font-size: 0.84rem;
+  padding: 4px 0;
+}
+
+.home-note {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
 }
 
 /* Trust card */
@@ -391,13 +480,13 @@
 /* ─── About View ─── */
 .about-hero {
   text-align: center;
-  padding: 16px 0 24px;
+  padding: 16px 0 20px;
 }
 
 .about-hero h2 {
   font-size: 1.6rem;
   font-weight: 700;
-  margin: 0 0 8px;
+  margin: 0 0 6px;
 }
 
 .about-hero p {
@@ -407,41 +496,196 @@
   margin: 0;
 }
 
-.pledge-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.pledge-list li {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 13px 0;
-  border-bottom: 1px solid var(--border);
+.about-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 12px;
   font-size: 0.9rem;
-  color: var(--text);
+  color: var(--text-muted);
+  line-height: 1.7;
 }
 
-.pledge-list li:last-child { border: none; }
+.about-block p { margin: 0 0 8px; }
+.about-block p:last-of-type { margin-bottom: 0; }
 
-.pledge-icon {
-  width: 30px;
-  height: 30px;
-  flex-shrink: 0;
-  background: var(--accent-dim);
-  border-radius: 8px;
+.about-block-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: var(--font-mono);
+  margin: 0 0 12px;
+}
+
+/* Scan → Inspect → Choose → Pay flow */
+.flow-steps {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text);
 }
 
-.pledge-icon svg {
-  width: 15px;
-  height: 15px;
-  stroke: var(--accent);
-  fill: none;
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.flow-arrow { color: var(--text-dim); }
+.flow-accent { color: var(--accent); }
+
+/* What we do / don't do */
+.about-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 400px) {
+  .about-two-col { grid-template-columns: 1fr; }
+}
+
+.about-do-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.about-do-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: var(--font-mono);
+  margin: 0 0 10px;
+}
+
+.do-yes { color: var(--accent); }
+.do-no  { color: var(--danger); }
+
+.cross-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px;
+}
+
+.cross-list li {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  padding: 4px 0;
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  line-height: 1.45;
+}
+
+.cross-list li::before {
+  content: "✕";
+  color: var(--danger);
+  font-size: 0.72rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.about-note {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+  margin: 0;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+
+/* Vision quote */
+.about-vision {
+  background: var(--accent-dim);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.about-vision p {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 6px;
+  line-height: 1.4;
+  font-style: italic;
+}
+
+.about-vision span {
+  font-size: 0.82rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* FAQs */
+.faq-heading {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: var(--font-mono);
+  margin: 0 0 12px;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.faq-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.faq-item summary {
+  padding: 14px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  line-height: 1.4;
+}
+
+.faq-item summary::-webkit-details-marker { display: none; }
+
+.faq-item summary::after {
+  content: "+";
+  font-size: 1.1rem;
+  color: var(--accent);
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+.faq-item[open] summary::after {
+  content: "−";
+}
+
+.faq-item p {
+  padding: 0 16px 14px;
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
 }
