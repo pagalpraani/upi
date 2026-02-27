@@ -427,8 +427,8 @@
    share.js reads the canvas pixel data directly (bypasses html2canvas
    taint issues) so saved/shared images use the full 1200px resolution. */
 #cardQrCode canvas {
-  width: 240px !important;
-  height: 240px !important;
+  width: 200px !important;
+  height: 200px !important;
   display: block;
 }
 
