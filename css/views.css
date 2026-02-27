@@ -43,23 +43,6 @@
   margin: 0 auto 18px;
 }
 
-.hero-pills {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 18px;
-}
-
-.hero-pill {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 4px 12px;
-}
 
 .hero-intent {
   font-family: var(--font-mono);
