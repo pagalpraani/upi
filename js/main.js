@@ -27,14 +27,14 @@ window.addEventListener('DOMContentLoaded', () => {
     state.currentLang = localStorage.getItem('lang');
   }
 
-  // 2. Handle payment-link mode (URL params)
-  const params = new URLSearchParams(window.location.search);
-  const pa = params.get('pa');
+  // 2. Handle payment-link mode — parse clean path: /pa/pn/am
+  const segments = window.location.pathname.split('/').filter(Boolean);
+  const pa = segments[0] ? decodeURIComponent(segments[0]) : null;
 
   if (pa) {
     state.isPaymentLinkMode = true;
-    const am = params.get('am') || '';
-    const pn = params.get('pn') || 'Unknown';
+    const pn = segments[1] ? decodeURIComponent(segments[1]) : 'Unknown';
+    const am = segments[2] ? decodeURIComponent(segments[2]) : '';
     state.rawAmountVal = am;
 
     // Show tools view but hide nav, tabs AND the scan/create tab cards
@@ -111,7 +111,7 @@ function exposeGlobals() {
 
 function goHome() {
   // Strip all URL params cleanly
-  window.history.replaceState({}, '', window.location.pathname);
+  window.history.replaceState({}, '', '/');
   // Reset payment-link mode state
   state.isPaymentLinkMode = false;
   // Show nav + tabs in case they were hidden
