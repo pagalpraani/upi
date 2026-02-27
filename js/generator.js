@@ -99,7 +99,8 @@ export function generateLink() {
 
   const { pa, pn, am } = data;
   // Clean path format: https://upinspect.pages.dev/pa/pn/am
-  let url = `${BASE_PAY_URL}/${encodeURIComponent(pa)}`;
+  // Keep @ readable, only encode truly unsafe characters
+  let url = `${BASE_PAY_URL}/${pa.replace(/[/?#\[\]!$&'()*+,;=%]/g, encodeURIComponent)}`;
   if (pn) url += `/${encodeURIComponent(pn)}`;
   if (am) url += `/${encodeURIComponent(am)}`;
 
