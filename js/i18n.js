@@ -117,18 +117,20 @@ export const translations = {
 export function applyLanguage(lang, isPaymentLinkMode) {
   const t = translations[lang];
 
-  // Update each element by its id
+  // Update every element whose id matches a translation key.
+  // This always runs in full — payment-link mode is NOT a skip condition.
+  // Labels like lblUpi / lblMerchant / lblAmount are included here.
   Object.keys(t).forEach(id => {
     const el = document.getElementById(id);
     if (el) el.textContent = t[id];
   });
 
-  // Override extractTitle when in payment-link mode
+  // In payment-link mode the badge title says "Payment Request" not "Payment Verified"
   if (isPaymentLinkMode) {
     const el = document.getElementById('extractTitle');
     if (el) el.textContent = t.txtPaymentRequest;
   }
 
-  // Update lang toggle label
+  // Update lang toggle button label (shows opposite language to switch to)
   document.getElementById('langBtn').textContent = lang === 'en' ? 'हिं' : 'EN';
 }
