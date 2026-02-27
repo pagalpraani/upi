@@ -3,7 +3,7 @@
 // UPInspect v2.0
 // ============================================================
 
-export const BASE_PAY_URL = "https://pagalpraani.github.io/upi/index.html";
+export const BASE_PAY_URL = "https://upinspect.pages.dev/";
 
 // Strict UPI ID format: localpart@provider (provider must be letters only)
 export const UPI_REGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z]{2,}$/;
