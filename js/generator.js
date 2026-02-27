@@ -46,15 +46,21 @@ function getFormValues() {
 // ─── Live validation ───────────────────────────────────────
 
 export function validateUpiLive() {
+  // UPI ID validation
   const input = $('newUpiId');
   const val   = input.value.trim();
-
   if (val.length === 0) {
     input.classList.remove('valid', 'invalid');
   } else if (UPI_REGEX.test(val)) {
     input.classList.replace('invalid', 'valid') || input.classList.add('valid');
   } else {
     input.classList.replace('valid', 'invalid') || input.classList.add('invalid');
+  }
+
+  // #4 — Clamp negative amounts live
+  const amtInput = $('newAmount');
+  if (amtInput.value !== '' && parseFloat(amtInput.value) < 0) {
+    amtInput.value = '0';
   }
 }
 
@@ -66,6 +72,14 @@ export function generateQRCard() {
 
   const { pa, pn, am } = data;
   const upiString = buildUpiString(pa, pn, am);
+
+  // #6 — Show loading state on button
+  const btn = document.querySelector('[onclick="generateQRCard()"]');
+  const originalHTML = btn ? btn.innerHTML : null;
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" style="animation:spin 0.7s linear infinite;width:18px;height:18px"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg><span>Generating…</span>';
+  }
 
   // Render standee text
   $('standeeName').textContent   = pn || (state.currentLang === 'en' ? 'UPI Payment' : 'यूपीआई भुगतान');
@@ -85,10 +99,17 @@ export function generateQRCard() {
     margin: 0,
   }).append($('cardQrCode'));
 
-  // Show result areas
-  $('qrStandee').classList.remove('hidden');
-  $('cardActions').classList.remove('hidden');
-  $('qrStandee').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  // Restore button after short delay (QR renders async)
+  setTimeout(() => {
+    if (btn && originalHTML) {
+      btn.disabled = false;
+      btn.innerHTML = originalHTML;
+    }
+    // Show result areas
+    $('qrStandee').classList.remove('hidden');
+    $('cardActions').classList.remove('hidden');
+    $('qrStandee').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 350);
 }
 
 // ─── Payment Link ──────────────────────────────────────────
@@ -104,15 +125,37 @@ export function generateLink() {
   if (pn) url += `/${encodeURIComponent(pn)}`;
   if (am) url += `/${encodeURIComponent(am)}`;
 
-  navigator.clipboard
-    .writeText(url)
-    .then(() =>
-      showMessage(
-        state.currentLang === 'en' ? 'Payment link copied!' : 'लिंक कॉपी किया गया!',
-        'success'
-      )
-    )
-    .catch(() => showMessage('Copy failed', 'error'));
+  const successMsg = state.currentLang === 'en' ? 'Payment link copied!' : 'लिंक कॉपी किया गया!';
+  const failMsg    = state.currentLang === 'en'
+    ? 'Copy failed — long-press the link to copy manually'
+    : 'कॉपी विफल — लिंक को मैन्युअली कॉपी करें';
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard
+      .writeText(url)
+      .then(() => showMessage(successMsg, 'success'))
+      .catch(() => {
+        // #7 Fallback: prompt with the URL so user can copy manually
+        showMessage(failMsg, 'error');
+        prompt('Copy this link:', url);
+      });
+  } else {
+    // #7 Older browsers: use execCommand fallback
+    const ta = document.createElement('textarea');
+    ta.value = url;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand('copy');
+      showMessage(successMsg, 'success');
+    } catch (_) {
+      showMessage(failMsg, 'error');
+      prompt('Copy this link:', url);
+    }
+    document.body.removeChild(ta);
+  }
 }
 
 // ─── Reset ─────────────────────────────────────────────────
