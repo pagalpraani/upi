@@ -110,11 +110,14 @@ function exposeGlobals() {
 // ─── Logo: go home & clean URL ─────────────────────────────
 
 function goHome() {
-  // Strip all URL params cleanly
+  // Strip path back to root
   window.history.replaceState({}, '', '/');
   // Reset payment-link mode state
   state.isPaymentLinkMode = false;
-  // Show nav + tabs in case they were hidden
+  // Hide payment-link buttons
+  document.getElementById('plActionButtons').classList.add('hidden');
+  document.getElementById('extractedCard').classList.add('hidden');
+  // Restore nav + tabs
   document.getElementById('bottomNav').classList.remove('hidden');
   document.getElementById('toolTabs').classList.remove('hidden');
   switchAppView('home');
