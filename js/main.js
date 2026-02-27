@@ -101,7 +101,23 @@ function exposeGlobals() {
     // Payment-link navigation
     plGoScan,
     plGoCreate,
+
+    // Logo
+    goHome,
   });
+}
+
+// ─── Logo: go home & clean URL ─────────────────────────────
+
+function goHome() {
+  // Strip all URL params cleanly
+  window.history.replaceState({}, '', window.location.pathname);
+  // Reset payment-link mode state
+  state.isPaymentLinkMode = false;
+  // Show nav + tabs in case they were hidden
+  document.getElementById('bottomNav').classList.remove('hidden');
+  document.getElementById('toolTabs').classList.remove('hidden');
+  switchAppView('home');
 }
 
 // ─── Language toggle ───────────────────────────────────────
