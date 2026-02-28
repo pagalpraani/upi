@@ -684,3 +684,84 @@
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
+
+/* ─── Features block ─── */
+.about-block.features-block {
+  padding: 0;
+  background: transparent;
+  border: none;
+  gap: 0;
+}
+
+.about-block-title.features-title,
+.about-block-title.usages-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-family: var(--font-mono);
+  margin: 0 0 10px;
+  padding: 0 2px;
+}
+
+/* Shared card list */
+.feature-list,
+.usage-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.feature-list li,
+.usage-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  transition: border-color 0.2s;
+}
+
+.feature-list li:hover,
+.usage-list li:hover {
+  border-color: var(--border-accent);
+}
+
+.feature-list li strong,
+.usage-list li strong {
+  color: var(--text);
+  font-weight: 700;
+  display: block;
+  margin-bottom: 2px;
+  font-size: 0.9rem;
+}
+
+/* Icon badge */
+.fi-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1rem;
+  margin-top: 1px;
+}
+
+.feature-list .fi-icon { background: var(--accent-dim); }
+.usage-list   .fi-icon { background: color-mix(in srgb, var(--primary) 10%, transparent); }
+
+.fi-text {
+  flex: 1;
+  min-width: 0;
+}
