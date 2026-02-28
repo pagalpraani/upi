@@ -162,6 +162,59 @@
   font-size: 0.84rem;
   padding: 4px 0;
 }
+/* ─── Home: Core Capabilities list ─── */
+.capability-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.capability-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 0.87rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.capability-list li:hover {
+  border-color: var(--border-accent);
+  background: var(--surface);
+}
+
+.capability-list li strong {
+  display: block;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 2px;
+}
+
+.cap-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--accent-dim);
+  border: 1px solid var(--border-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.88rem;
+  margin-top: 1px;
+}
+
+.cap-text { flex: 1; min-width: 0; }
+
 
 .home-note {
   margin: 0;
