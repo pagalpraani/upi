@@ -1,6 +1,6 @@
 // ============================================================
 // router.js — App-level view routing & tab switching
-// UPInspect v2.0
+// UPInspect v1.0
 // ============================================================
 
 import { stopScanner } from './scanner.js';
