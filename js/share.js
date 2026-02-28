@@ -1,10 +1,6 @@
 // ============================================================
 // share.js — Standee image download & native share
-// UPInspect v2.0
-//
-// Renders the standee card directly onto a <canvas> instead of
-// using html2canvas. This avoids all canvas-taint security errors
-// and produces a pixel-perfect, full-resolution PNG every time.
+// UPInspect v1.0
 // ============================================================
 
 import { state }       from './state.js';
