@@ -1,6 +1,6 @@
 // ============================================================
 // state.js — Shared application state & constants
-// UPInspect v2.0
+// UPInspect v1.0
 // ============================================================
 
 export const BASE_PAY_URL = "https://upinspect.pages.dev";
