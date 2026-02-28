@@ -1,3 +1,8 @@
+// ============================================================
+// paylink.js — Payment Link Page
+// UPInspect v1.0
+// ============================================================
+
 import { switchAppView, switchToolTab } from './router.js';
 
 export function showPayLinkButtons() {
