@@ -5,7 +5,8 @@
 
 import { state }                          from './state.js';
 import { restoreTheme, toggleTheme }      from './ui.js';
-import { applyLanguage }                  from './i18n.js';
+import { applyLanguage, getLang,
+         getNextLang }                  from './i18n.js';
 import { switchAppView, navToTools,
          switchToolTab }                  from './router.js';
 import { startScanner, stopScanner,
@@ -23,9 +24,9 @@ import { showPayLinkButtons,
 window.addEventListener('DOMContentLoaded', () => {
   // 1. Restore persisted preferences
   restoreTheme();
-  if (localStorage.getItem('lang')) {
-    state.currentLang = localStorage.getItem('lang');
-  }
+  // Restore language preference
+  const savedLang = localStorage.getItem('lang') || 'en';
+  state.currentLang = savedLang;
 
   // 2. Handle payment-link mode — parse clean path: /pa/pn/am
   const segments = window.location.pathname.split('/').filter(Boolean);
@@ -140,7 +141,8 @@ function goHome() {
 // ─── Language toggle ───────────────────────────────────────
 
 function toggleLang() {
-  state.currentLang = state.currentLang === 'en' ? 'hi' : 'en';
+  // Cycle to next language — works for 2+ languages automatically
+  state.currentLang = getNextLang();
   localStorage.setItem('lang', state.currentLang);
   applyLanguage(state.currentLang, state.isPaymentLinkMode);
 }
