@@ -17,8 +17,10 @@ export function renderExtractedCard({ pa, pn, am }) {
   $('valUpiId').textContent   = pa;
   $('valMerchant').textContent = pn;
 
-  if (am) {
-    $('valAmount').textContent = `₹ ${parseFloat(am).toFixed(2)}`;
+  // Only show amount if it is a valid number >= 1
+  const amtNum = Number(am);
+  if (am && !isNaN(amtNum) && amtNum >= 1) {
+    $('valAmount').textContent = `₹ ${amtNum.toFixed(2)}`;
     $('groupAmount').classList.remove('hidden');
   } else {
     $('groupAmount').classList.add('hidden');
@@ -55,6 +57,13 @@ export function openUPI() {
   if (!pa || pa === '—' || pa === 'N/A') return;
 
   let link = `upi://pay?pa=${encodeURIComponent(pa)}&pn=${encodeURIComponent(pn)}&cu=INR`;
-  if (state.rawAmountVal) link += `&am=${state.rawAmountVal}`;
+
+  // Use Number() not parseFloat() — parseFloat('100&pa=attacker@upi') = 100 (injection risk)
+  // Only include amount if it is a real number >= 1
+  const amt = Number(state.rawAmountVal);
+  if (state.rawAmountVal && !isNaN(amt) && amt >= 1) {
+    link += `&am=${encodeURIComponent(String(amt))}`;
+  }
+
   window.open(link, '_self');
 }
