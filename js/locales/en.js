@@ -126,6 +126,9 @@ export default {
   txtVersion: 'UPInspect v1.0  ·  MIT License',
 
   // ── Toast / error messages ──────────────────────────────
+  txtTorchOn:            'Turn on torch',
+  txtTorchOff:           'Turn off torch',
+  msgTorchUnsupported:   'Torch not supported on this device.',
   msgCameraDenied:   'Camera access denied.',
   msgQrReadError:    'Cannot read QR from image.',
   msgQrParseError:   'Could not parse QR data.',
