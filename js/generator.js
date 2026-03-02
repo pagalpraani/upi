@@ -39,11 +39,10 @@ function getFormValues() {
     return null;
   }
 
-  if (am && (isNaN(parseFloat(am)) || parseFloat(am) < 0)) {
-    showMessage(
-      t('msgAmountInvalid'),
-      'error'
-    );
+  // Use Number() — parseFloat('100&pa=attacker@upi') wrongly parses to 100
+  const amtNum = am ? Number(am) : NaN;
+  if (am && (isNaN(amtNum) || amtNum < 1)) {
+    showMessage(t('msgAmountInvalid'), 'error');
     return null;
   }
 
@@ -76,9 +75,11 @@ export function validateUpiLive() {
   }
 
   // #4 — Clamp negative amounts live
+  // Clamp: reject zero, negative, or anything below 1
   const amtInput = $('newAmount');
-  if (amtInput.value !== '' && parseFloat(amtInput.value) < 0) {
-    amtInput.value = '0';
+  if (amtInput.value !== '') {
+    const v = Number(amtInput.value);
+    if (isNaN(v) || v < 0) amtInput.value = '0';
   }
 }
 
@@ -102,7 +103,7 @@ export function generateQRCard() {
   // Render standee text
   $('standeeName').textContent   = pn || t('msgStandeeDefault');
   $('standeeUpiId').textContent  = pa;
-  $('standeeAmount').textContent = am ? `₹ ${parseFloat(am).toFixed(2)}` : '';
+  $('standeeAmount').textContent = (am && Number(am) >= 1) ? `₹ ${Number(am).toFixed(2)}` : '';
 
   // Clear previous QR and render at 5× resolution (1200px) for crisp saves.
   // CSS in #cardQrCode canvas caps the visual size to 240px.
@@ -142,7 +143,7 @@ export function generateLink() {
   // Keep @ readable, only encode truly unsafe characters
   let url = `${BASE_PAY_URL}/${pa.replace(/[/?#\[\]!$&'()*+,;=%]/g, encodeURIComponent)}`;
   if (pn) url += `/${encodeURIComponent(pn)}`;
-  if (am) url += `/${encodeURIComponent(am)}`;
+  if (am && Number(am) >= 1) url += `/${encodeURIComponent(String(Number(am)))}`;
 
   const successMsg = t('msgLinkCopied');
   const failMsg    = t('msgLinkCopyFailed');
@@ -190,7 +191,11 @@ export function resetCreateForm() {
 // ─── Internal helpers ──────────────────────────────────────
 
 function buildUpiString(pa, pn, am) {
-  let s = `upi://pay?pa=${pa}&pn=${encodeURIComponent(pn)}&cu=INR`;
-  if (am) s += `&am=${am}`;
+  let s = `upi://pay?pa=${encodeURIComponent(pa)}&pn=${encodeURIComponent(pn)}&cu=INR`;
+  // encodeURIComponent on amount prevents parameter injection
+  const amtNum = Number(am);
+  if (am && !isNaN(amtNum) && amtNum >= 1) {
+    s += `&am=${encodeURIComponent(String(amtNum))}`;
+  }
   return s;
 }
