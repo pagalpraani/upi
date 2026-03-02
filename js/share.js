@@ -171,35 +171,55 @@ function ellipsis(ctx, text, maxW) {
 
 /** Draw the UPInspect QR-corner icon inside the brand icon box. */
 function drawIcon(ctx, bx, by, size) {
-  const p = size * 0.18;  // padding inside the box
-  const x = bx + p;
-  const y = by + p;
-  const s = size - p * 2; // drawable area
-  const c = s / 3;        // cell size
+  // Mirrors the SVG exactly: viewBox 0 0 24, icon drawn inside the box.
+  // Maps SVG coordinate space (24×24) into the canvas icon box (size×size).
+  const sc = size / 24;  // scale factor
 
   ctx.save();
+  ctx.translate(bx, by);
+
   ctx.strokeStyle = '#FFFFFF';
-  ctx.lineWidth   = Math.max(1, size * 0.08);
+  ctx.lineWidth   = Math.max(1, 1.5 * sc);
   ctx.lineCap     = 'round';
   ctx.lineJoin    = 'round';
+  ctx.fillStyle   = 'none';
 
-  // Three corner squares (top-left, top-right, bottom-left)
-  [[0, 0], [c * 2, 0], [0, c * 2]].forEach(([ox, oy]) => {
+  // Three corner squares: same x/y/w/h/rx as the SVG rects
+  const squares = [[3, 3], [14, 3], [3, 14]];
+  squares.forEach(([sx, sy]) => {
+    const rx = 1.5 * sc;
+    const sw = 7 * sc;
+    const px = sx * sc, py = sy * sc;
     ctx.beginPath();
-    ctx.rect(x + ox, y + oy, c * 0.85, c * 0.85);
+    ctx.roundRect
+      ? ctx.roundRect(px, py, sw, sw, rx)
+      : rrPath(ctx, px, py, sw, sw, rx);
     ctx.stroke();
   });
 
-  // Bottom-right: outward arrow
+  // Arrow: M14 14 h3  →  move to (14,14) line to (17,14)
+  //        m0 0 v3    →  (17,14) line to (17,17)   [same start: sub-path]
+  //        m0-3 l4 4  →  from (17,14) line to (21,18)
   ctx.beginPath();
-  ctx.moveTo(x + c * 2,        y + s * 0.72);
-  ctx.lineTo(x + s,            y + s * 0.72);
-  ctx.moveTo(x + s * 0.75,     y + s * 0.55);
-  ctx.lineTo(x + s,            y + s * 0.72);
-  ctx.lineTo(x + s * 0.75,     y + s * 0.89);
+  ctx.moveTo(14 * sc, 14 * sc);
+  ctx.lineTo(17 * sc, 14 * sc);   // h3
+  ctx.moveTo(17 * sc, 14 * sc);
+  ctx.lineTo(17 * sc, 17 * sc);   // v3
+  ctx.moveTo(17 * sc, 14 * sc);
+  ctx.lineTo(21 * sc, 18 * sc);   // l4 4
   ctx.stroke();
 
   ctx.restore();
+}
+
+function rrPath(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y,     x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x,     y + h, r);
+  ctx.arcTo(x,     y + h, x,     y,     r);
+  ctx.arcTo(x,     y,     x + w, y,     r);
+  ctx.closePath();
 }
 
 /** roundRect with polyfill for older browsers. */
