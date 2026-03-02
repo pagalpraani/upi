@@ -47,11 +47,14 @@ async function getCardBlob() {
   const FOOTER_PT = 14 * SCALE;
   const APPS_H    = 18 * SCALE;
   const SCAN_H    = 20 * SCALE;
+  const URL_H     = 16 * SCALE;  // upinspect.pages.dev line
+  const URL_MT    =  8 * SCALE;  // margin-top above URL
 
   const CH = PAD + LOGO_H + LOGO_MB
            + NAME_H + 6 * SCALE + UPI_H + AMT_GAP + AMT_H
            + HDR_MB + QR_WRAP_H
            + FOOTER_MB + FOOTER_PT + APPS_H + 6 * SCALE + SCAN_H
+           + URL_MT + URL_H
            + PAD;
 
   const cv  = document.createElement('canvas');
@@ -151,6 +154,12 @@ async function getCardBlob() {
   ctx.fillStyle = '#10B981';
   ctx.font      = `700 ${Math.round(14.1 * SCALE)}px "DM Sans",sans-serif`;
   ctx.fillText($('txtScanPrompt').textContent.trim(), CW / 2, y);
+  y += SCAN_H + URL_MT;
+
+  // ── Website URL ──────────────────────────────────────
+  ctx.fillStyle = '#94A3B8';
+  ctx.font      = `400 ${Math.round(10 * SCALE)}px "Space Mono",monospace`;
+  ctx.fillText('upinspect.pages.dev', CW / 2, y);
 
   return new Promise((resolve, reject) =>
     cv.toBlob(blob => blob ? resolve(blob) : reject(new Error('toBlob failed')), 'image/png')
@@ -273,12 +282,23 @@ export async function shareStandee() {
     const blob = await getCardBlob();
     const file = new File([blob], 'UPInspect-QR.png', { type: 'image/png' });
 
+    // Build caption from live standee values
+    const shareName   = $('standeeName').textContent.trim();
+    const shareAmount = $('standeeAmount').textContent.trim();
+    const shareUpiId  = $('standeeUpiId').textContent.trim();
+
+    const payLine = shareName && shareName !== 'UPI Payment'
+      ? `Pay ${shareName}${shareAmount ? ' ' + shareAmount : ''}`
+      : `Pay ${shareUpiId}${shareAmount ? ' ' + shareAmount : ''}`;
+
+    const caption = `${payLine}\n\nCreate Your Own Custom UPI QR Code and Shareable Payment Link on https://upinspect.pages.dev`;
+
     if (navigator.share && navigator.canShare?.({ files: [file] })) {
       // Native share with image — Android, iOS Safari
-      await navigator.share({ title: 'Scan to Pay', files: [file] });
+      await navigator.share({ title: payLine, text: caption, files: [file] });
     } else if (navigator.share) {
       // Share API present but no file support
-      await navigator.share({ title: 'UPInspect QR', text: 'Scan to pay securely' });
+      await navigator.share({ title: payLine, text: caption });
     } else {
       // No share API — fall back to download
       await downloadStandee();
