@@ -132,6 +132,7 @@ export default {
   msgQrInvalid:      'अमान्य UPI QR कोड।',
   msgUpiIdInvalid:   'सही UPI ID दर्ज करें (जैसे name@upi)',
   msgAmountInvalid:  'सही राशि दर्ज करें।',
+  msgNameInvalid:    'व्यापारी का नाम केवल अंग्रेज़ी अक्षरों में होना चाहिए (A–Z, 0–9).',
   msgUpiCopied:      'UPI ID कॉपी हो गई!',
   msgCopyFailed:     'कॉपी विफल।',
   msgLinkCopied:     'पेमेंट लिंक कॉपी हो गया!',
