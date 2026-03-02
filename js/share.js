@@ -2,7 +2,7 @@
 // share.js — Standee export via native canvas compositing
 // UPInspect v1.0
 //
-// Draws the complete standee card natively on <canvas> using
+// Draws the complete standee card natively on using
 // hardcoded layout constants that mirror views.css exactly.
 // The QR is composited via ctx.drawImage() — same-origin,
 // reads all 1200×1200 native pixels, zero upscaling, zero blur.
@@ -10,16 +10,16 @@
 // ============================================================
 
 import { showMessage } from './ui.js';
-import { t }           from './i18n.js';
+import { t } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 
 // ─── Canvas renderer ───────────────────────────────────────
 
 async function getCardBlob() {
-  const name     = $('standeeName').textContent.trim()  || t('txtStandeeDefault');
-  const upiId    = $('standeeUpiId').textContent.trim();
-  const amount   = $('standeeAmount').textContent.trim();
+  const name = $('standeeName').textContent.trim() || t('txtStandeeDefault');
+  const upiId = $('standeeUpiId').textContent.trim();
+  const amount = $('standeeAmount').textContent.trim();
   const qrCanvas = $('cardQrCode').querySelector('canvas');
 
   if (!qrCanvas) throw new Error('QR canvas not found — generate a QR first.');
@@ -28,37 +28,37 @@ async function getCardBlob() {
   await document.fonts.ready;
 
   const SCALE = 3;
-  const CW    = 320 * SCALE;
-  const PAD   = 24  * SCALE;
+  const CW = 320 * SCALE;
+  const PAD = 24 * SCALE;
   const RADIUS = 16 * SCALE;
 
   // ── Row heights (mirrors views.css) ──────────────────
-  const LOGO_H    = 24 * SCALE;
-  const LOGO_MB   = 16 * SCALE;
-  const NAME_H    = 30 * SCALE;
-  const UPI_H     = 20 * SCALE;
-  const AMT_H     = amount ? 28 * SCALE : 0;
-  const AMT_GAP   = amount ? 8  * SCALE : 0;
-  const HDR_MB    = 16 * SCALE;
-  const QR_PAD    = 10 * SCALE;
-  const QR_SIZE   = 200 * SCALE;
+  const LOGO_H = 24 * SCALE;
+  const LOGO_MB = 16 * SCALE;
+  const NAME_H = 30 * SCALE;
+  const UPI_H = 20 * SCALE;
+  const AMT_H = amount ? 28 * SCALE : 0;
+  const AMT_GAP = amount ? 8 * SCALE : 0;
+  const HDR_MB = 16 * SCALE;
+  const QR_PAD = 10 * SCALE;
+  const QR_SIZE = 200 * SCALE;
   const QR_WRAP_H = QR_SIZE + QR_PAD * 2;
   const FOOTER_MB = 20 * SCALE;
   const FOOTER_PT = 14 * SCALE;
-  const APPS_H    = 18 * SCALE;
-  const SCAN_H    = 20 * SCALE;
-  const URL_H     = 16 * SCALE;  // upinspect.pages.dev line
-  const URL_MT    =  8 * SCALE;  // margin-top above URL
+  const APPS_H = 18 * SCALE;
+  const SCAN_H = 20 * SCALE;
+  const URL_H = 16 * SCALE; // upinspect.pages.dev line
+  const URL_MT = 8 * SCALE; // margin-top above URL
 
   const CH = PAD + LOGO_H + LOGO_MB
-           + NAME_H + 6 * SCALE + UPI_H + AMT_GAP + AMT_H
-           + HDR_MB + QR_WRAP_H
-           + FOOTER_MB + FOOTER_PT + APPS_H + 6 * SCALE + SCAN_H
-           + URL_MT + URL_H
-           + PAD;
+    + NAME_H + 6 * SCALE + UPI_H + AMT_GAP + AMT_H
+    + HDR_MB + QR_WRAP_H
+    + FOOTER_MB + FOOTER_PT + APPS_H + 6 * SCALE + SCAN_H
+    + URL_MT + URL_H
+    + PAD;
 
-  const cv  = document.createElement('canvas');
-  cv.width  = CW;
+  const cv = document.createElement('canvas');
+  cv.width = CW;
   cv.height = CH;
   const ctx = cv.getContext('2d');
 
@@ -66,42 +66,42 @@ async function getCardBlob() {
   ctx.fillStyle = '#FFFFFF';
   rr(ctx, 0, 0, CW, CH, RADIUS); ctx.fill();
   ctx.strokeStyle = '#E2E8F0';
-  ctx.lineWidth   = 1 * SCALE;
+  ctx.lineWidth = 1 * SCALE;
   rr(ctx, 0, 0, CW, CH, RADIUS); ctx.stroke();
 
   let y = PAD;
 
   // ── Logo row ─────────────────────────────────────────
-  const ICON  = 24 * SCALE;
+  const ICON = 24 * SCALE;
   const brandText = 'UPInspect';
   ctx.font = `700 ${Math.round(14.4 * SCALE)}px "Space Mono",monospace`;
   const textW = ctx.measureText(brandText).width;
-  const gap   = 7 * SCALE;
-  const rowW  = ICON + gap + textW;
-  const rowX  = (CW - rowW) / 2;
+  const gap = 7 * SCALE;
+  const rowW = ICON + gap + textW;
+  const rowX = (CW - rowW) / 2;
 
   ctx.fillStyle = '#0A2463';
   rr(ctx, rowX, y, ICON, ICON, 6 * SCALE); ctx.fill();
   drawIcon(ctx, rowX, y, ICON);
 
-  ctx.fillStyle    = '#0A2463';
+  ctx.fillStyle = '#0A2463';
   ctx.textBaseline = 'middle';
-  ctx.textAlign    = 'left';
+  ctx.textAlign = 'left';
   ctx.fillText(brandText, rowX + ICON + gap, y + ICON / 2);
 
   y += LOGO_H + LOGO_MB;
 
   // ── Merchant name ────────────────────────────────────
-  ctx.fillStyle    = '#1E3A8A';
-  ctx.font         = `800 ${Math.round(20 * SCALE)}px "DM Sans",sans-serif`;
-  ctx.textAlign    = 'center';
+  ctx.fillStyle = '#1E3A8A';
+  ctx.font = `800 ${Math.round(20 * SCALE)}px "DM Sans",sans-serif`;
+  ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
   ctx.fillText(ellipsis(ctx, name, CW - PAD * 2), CW / 2, y);
   y += NAME_H + 6 * SCALE;
 
   // ── UPI ID ───────────────────────────────────────────
   ctx.fillStyle = '#64748B';
-  ctx.font      = `600 ${Math.round(13.1 * SCALE)}px "Space Mono",monospace`;
+  ctx.font = `600 ${Math.round(13.1 * SCALE)}px "Space Mono",monospace`;
   ctx.fillText(ellipsis(ctx, upiId, CW - PAD * 2), CW / 2, y);
   y += UPI_H;
 
@@ -109,7 +109,7 @@ async function getCardBlob() {
   if (amount) {
     y += AMT_GAP;
     ctx.fillStyle = '#0F172A';
-    ctx.font      = `800 ${Math.round(19.2 * SCALE)}px "DM Sans",sans-serif`;
+    ctx.font = `800 ${Math.round(19.2 * SCALE)}px "DM Sans",sans-serif`;
     ctx.fillText(amount, CW / 2, y);
     y += AMT_H;
   }
@@ -118,12 +118,12 @@ async function getCardBlob() {
 
   // ── QR wrapper box ───────────────────────────────────
   const qx = (CW - QR_SIZE - QR_PAD * 2) / 2;
-  const qw  = QR_SIZE + QR_PAD * 2;
+  const qw = QR_SIZE + QR_PAD * 2;
 
   ctx.fillStyle = '#FFFFFF';
   rr(ctx, qx, y, qw, QR_WRAP_H, 12 * SCALE); ctx.fill();
   ctx.strokeStyle = '#F1F5F9';
-  ctx.lineWidth   = 2 * SCALE;
+  ctx.lineWidth = 2 * SCALE;
   rr(ctx, qx, y, qw, QR_WRAP_H, 12 * SCALE); ctx.stroke();
 
   // QR pixels — reads all 1200×1200 native canvas pixels directly
@@ -134,7 +134,7 @@ async function getCardBlob() {
   // ── Dashed divider ───────────────────────────────────
   ctx.setLineDash([6 * SCALE, 4 * SCALE]);
   ctx.strokeStyle = '#E2E8F0';
-  ctx.lineWidth   = 2 * SCALE;
+  ctx.lineWidth = 2 * SCALE;
   ctx.beginPath();
   ctx.moveTo(PAD, y); ctx.lineTo(CW - PAD, y);
   ctx.stroke();
@@ -143,22 +143,22 @@ async function getCardBlob() {
   y += FOOTER_PT;
 
   // ── UPI apps line ────────────────────────────────────
-  ctx.fillStyle    = '#64748B';
-  ctx.font         = `600 ${Math.round(12 * SCALE)}px "DM Sans",sans-serif`;
+  ctx.fillStyle = '#64748B';
+  ctx.font = `600 ${Math.round(12 * SCALE)}px "DM Sans",sans-serif`;
   ctx.textBaseline = 'top';
-  ctx.textAlign    = 'center';
+  ctx.textAlign = 'center';
   ctx.fillText($('txtUpiApps').textContent.trim(), CW / 2, y);
   y += APPS_H + 6 * SCALE;
 
   // ── Scan prompt ──────────────────────────────────────
   ctx.fillStyle = '#10B981';
-  ctx.font      = `700 ${Math.round(14.1 * SCALE)}px "DM Sans",sans-serif`;
+  ctx.font = `700 ${Math.round(14.1 * SCALE)}px "DM Sans",sans-serif`;
   ctx.fillText($('txtScanPrompt').textContent.trim(), CW / 2, y);
   y += SCAN_H + URL_MT;
 
   // ── Website URL ──────────────────────────────────────
   ctx.fillStyle = '#94A3B8';
-  ctx.font      = `400 ${Math.round(10 * SCALE)}px "Space Mono",monospace`;
+  ctx.font = `400 ${Math.round(10 * SCALE)}px "Space Mono",monospace`;
   ctx.fillText('upinspect.pages.dev', CW / 2, y);
 
   return new Promise((resolve, reject) =>
@@ -180,46 +180,44 @@ function ellipsis(ctx, text, maxW) {
 
 /** Draw the UPInspect QR-corner icon inside the brand icon box. */
 function drawIcon(ctx, bx, by, size) {
-  // Mirrors the SVG exactly: viewBox 0 0 24, icon drawn inside the box.
-  // Maps SVG coordinate space (24×24) into the canvas icon box (size×size).
-  const sc = size / 24;  // scale factor
-
   ctx.save();
+  
+  // Scale context to use exact SVG 0-24 coordinates
   ctx.translate(bx, by);
+  ctx.scale(size / 24, size / 24);
 
   ctx.strokeStyle = '#FFFFFF';
-  ctx.lineWidth   = Math.max(1, 1.5 * sc);
-  ctx.lineCap     = 'round';
-  ctx.lineJoin    = 'round';
-  ctx.fillStyle   = 'none';
+  ctx.lineWidth = 2; 
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.fillStyle = 'none';
 
-  // Three corner squares: same x/y/w/h/rx as the SVG rects
+  // Three corner squares
   const squares = [[3, 3], [14, 3], [3, 14]];
-  squares.forEach(([sx, sy]) => {
-  const rx = 1.5 * sc;
-  const sw = 7 * sc;
-  const px = sx * sc, py = sy * sc;
-  ctx.beginPath();
-  if (ctx.roundRect) {
-    ctx.roundRect(px, py, sw, sw, rx);
+  squares.forEach(([x, y]) => {
+    ctx.beginPath();
+    if (ctx.roundRect) {
+      ctx.roundRect(x, y, 7, 7, 1.5);
+    } else {
+      rrPath(ctx, x, y, 7, 7, 1.5);
+    }
+    ctx.stroke();
+  });
+
+  // Arrow
+  if (typeof Path2D !== 'undefined') {
+    const p = new Path2D("M14 14h3m0 0v3m0-3 4 4");
+    ctx.stroke(p);
   } else {
-    rrPath(ctx, px, py, sw, sw, rx);
+    ctx.beginPath();
+    ctx.moveTo(14, 14);
+    ctx.lineTo(17, 14);
+    ctx.moveTo(17, 14);
+    ctx.lineTo(17, 17);
+    ctx.moveTo(17, 14);
+    ctx.lineTo(21, 18);
+    ctx.stroke();
   }
-  ctx.fillStyle = '#FFFFFF';   // Filled like SVG
-  ctx.fill();
-});
-  
-  // Arrow: M14 14 h3  →  move to (14,14) line to (17,14)
-  //        m0 0 v3    →  (17,14) line to (17,17)   [same start: sub-path]
-  //        m0-3 l4 4  →  from (17,14) line to (21,18)
-  ctx.beginPath();
-  ctx.moveTo(14 * sc, 14 * sc);
-  ctx.lineTo(17 * sc, 14 * sc);   // h3
-  ctx.moveTo(17 * sc, 14 * sc);
-  ctx.lineTo(17 * sc, 17 * sc);   // v3
-  ctx.moveTo(17 * sc, 14 * sc);
-  ctx.lineTo(21 * sc, 18 * sc);   // l4 4
-  ctx.stroke();
 
   ctx.restore();
 }
@@ -227,10 +225,10 @@ function drawIcon(ctx, bx, by, size) {
 function rrPath(ctx, x, y, w, h, r) {
   ctx.beginPath();
   ctx.moveTo(x + r, y);
-  ctx.arcTo(x + w, y,     x + w, y + h, r);
-  ctx.arcTo(x + w, y + h, x,     y + h, r);
-  ctx.arcTo(x,     y + h, x,     y,     r);
-  ctx.arcTo(x,     y,     x + w, y,     r);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
   ctx.closePath();
 }
 
@@ -242,10 +240,10 @@ function rr(ctx, x, y, w, h, r) {
   } else {
     ctx.beginPath();
     ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y,     x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x,     y + h, r);
-    ctx.arcTo(x,     y + h, x,     y,     r);
-    ctx.arcTo(x,     y,     x + w, y,     r);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
     ctx.closePath();
   }
 }
@@ -258,8 +256,8 @@ export async function downloadStandee() {
 
   try {
     const blob = await getCardBlob();
-    const url  = URL.createObjectURL(blob);
-    const a    = Object.assign(document.createElement('a'), {
+    const url = URL.createObjectURL(blob);
+    const a = Object.assign(document.createElement('a'), {
       href: url, download: 'UPInspect-QR.png',
     });
     document.body.appendChild(a);
@@ -286,14 +284,12 @@ export async function shareStandee() {
     const file = new File([blob], 'UPInspect-QR.png', { type: 'image/png' });
 
     // Build caption from live standee values
-    const shareName   = $('standeeName').textContent.trim();
+    const shareName = $('standeeName').textContent.trim();
     const shareAmount = $('standeeAmount').textContent.trim();
-    const shareUpiId  = $('standeeUpiId').textContent.trim();
-
+    const shareUpiId = $('standeeUpiId').textContent.trim();
     const payLine = shareName && shareName !== 'UPI Payment'
       ? `Pay ${shareName}${shareAmount ? ' ' + shareAmount : ''}`
       : `Pay ${shareUpiId}${shareAmount ? ' ' + shareAmount : ''}`;
-
     const caption = `${payLine}\n\nCreate Your Own Custom UPI QR Code and Shareable Payment Link on https://upinspect.pages.dev`;
 
     if (navigator.share && navigator.canShare?.({ files: [file] })) {
@@ -307,6 +303,7 @@ export async function shareStandee() {
       await downloadStandee();
       return; // downloadStandee re-enables btn
     }
+
   } catch (e) {
     if (e.name !== 'AbortError') {
       showMessage(t('msgShareFailed'), 'error');
