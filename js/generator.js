@@ -9,6 +9,10 @@ import { showMessage }                     from './ui.js';
 
 const $ = id => document.getElementById(id);
 
+// UPI apps only accept ASCII merchant names — block non-Latin characters.
+// Allows: A-Z a-z 0-9 space & . , - ' /
+const NAME_REGEX = /^[A-Za-z0-9 &.,\-''/]*$/;
+
 // ─── Validation ────────────────────────────────────────────
 
 /**
@@ -26,6 +30,12 @@ function getFormValues() {
       'error'
     );
     $('newUpiId').classList.add('invalid');
+    return null;
+  }
+
+  if (pn && !NAME_REGEX.test(pn)) {
+    showMessage(t('msgNameInvalid'), 'error');
+    $('newName').classList.add('invalid');
     return null;
   }
 
@@ -52,6 +62,17 @@ export function validateUpiLive() {
     input.classList.replace('invalid', 'valid') || input.classList.add('valid');
   } else {
     input.classList.replace('valid', 'invalid') || input.classList.add('invalid');
+  }
+
+  // Name: flag non-ASCII characters live
+  const nameInput = $('newName');
+  const nameVal   = nameInput.value;
+  if (nameVal.length === 0) {
+    nameInput.classList.remove('valid', 'invalid');
+  } else if (NAME_REGEX.test(nameVal)) {
+    nameInput.classList.replace('invalid', 'valid') || nameInput.classList.add('valid');
+  } else {
+    nameInput.classList.replace('valid', 'invalid') || nameInput.classList.add('invalid');
   }
 
   // #4 — Clamp negative amounts live
@@ -161,6 +182,7 @@ export function resetCreateForm() {
     $(`${id}`).value = '';
   });
   $('newUpiId').classList.remove('valid', 'invalid');
+  $('newName').classList.remove('valid', 'invalid');
   $('qrStandee').classList.add('hidden');
   $('cardActions').classList.add('hidden');
 }
