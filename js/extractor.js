@@ -17,11 +17,14 @@ export function renderExtractedCard({ pa, pn, am }) {
   $('valUpiId').textContent   = pa;
   $('valMerchant').textContent = pn;
 
-  // Only show amount if it is a valid number >= 1
+  // Only show amount row if it is a valid number >= 1
   const amtNum = Number(am);
   if (am && !isNaN(amtNum) && amtNum >= 1) {
     $('valAmount').textContent = `₹ ${amtNum.toFixed(2)}`;
     $('groupAmount').classList.remove('hidden');
+    // Always start in display mode when card is freshly rendered
+    $('amountDisplay').classList.remove('hidden');
+    $('amountEdit').classList.add('hidden');
   } else {
     $('groupAmount').classList.add('hidden');
   }
@@ -66,4 +69,47 @@ export function openUPI() {
   }
 
   window.open(link, '_self');
+}
+
+/**
+ * Switch the amount row into inline edit mode.
+ */
+export function startEditAmount() {
+  const current = $('valAmount').textContent.replace('₹', '').trim();
+  $('editAmtInput').value = current || '';
+  $('amountDisplay').classList.add('hidden');
+  $('amountEdit').classList.remove('hidden');
+  $('editAmtInput').focus();
+  $('editAmtInput').select();
+}
+
+/**
+ * Confirm the edited amount and update state + display.
+ */
+export function confirmEditAmount() {
+  const raw = $('editAmtInput').value.trim();
+  const num = Number(raw);
+
+  if (!raw || isNaN(num) || num < 1) {
+    // Invalid — cancel silently and keep original
+    cancelEditAmount();
+    return;
+  }
+
+  // Update display
+  $('valAmount').textContent = `₹ ${num.toFixed(2)}`;
+  // Update rawAmountVal so openUPI() uses the new value
+  state.rawAmountVal = String(num);
+
+  $('amountEdit').classList.add('hidden');
+  $('amountDisplay').classList.remove('hidden');
+}
+
+/**
+ * Cancel edit — restore display without changes.
+ */
+export function cancelEditAmount() {
+  $('editAmtInput').value = '';
+  $('amountEdit').classList.add('hidden');
+  $('amountDisplay').classList.remove('hidden');
 }
