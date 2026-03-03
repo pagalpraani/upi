@@ -298,16 +298,32 @@ export async function shareStandee() {
 
     const caption = `${payLine}\n\nCreate Your Own Custom UPI QR Code and Shareable Payment Link on https://upinspect.pages.dev`;
 
-    if (navigator.share && navigator.canShare?.({ files: [file] })) {
-      // Native share with image — Android, iOS Safari
-      await navigator.share({ title: payLine, text: caption, files: [file] });
-    } else if (navigator.share) {
-      // Share API present but no file support
-      await navigator.share({ title: payLine, text: caption });
+    if (navigator.share) {
+      // Probe whether this browser/device can share files.
+      // canShare() is unreliable in Firefox so we also do a live attempt.
+      const canShareFiles = navigator.canShare?.({ files: [file] });
+
+      if (canShareFiles) {
+        // Chrome Android, iOS Safari, Edge — native share sheet with image
+        await navigator.share({ title: payLine, text: caption, files: [file] });
+      } else {
+        // Firefox Android (and desktop browsers): canShare() returns false for files.
+        // Best UX: download the image directly so the user has the file,
+        // then share the caption text so they can paste it alongside.
+        await downloadStandee();
+        try {
+          await navigator.share({ title: payLine, text: caption });
+        } catch (textShareErr) {
+          if (textShareErr.name !== 'AbortError') {
+            showMessage(t('msgShareFailed'), 'error');
+          }
+        }
+        return; // downloadStandee already re-enables btn via its own path
+      }
     } else {
-      // No share API — fall back to download
+      // No share API at all (desktop) — just download
       await downloadStandee();
-      return; // downloadStandee re-enables btn
+      return;
     }
   } catch (e) {
     if (e.name !== 'AbortError') {
