@@ -99,14 +99,41 @@ export function initFileUploadListener() {
     if (!file) return;
 
     $('extractedCard').classList.add('hidden');
-    initScanner();
-
-    state.html5QrCode
-      .scanFile(file, true)
-      .then(decodedText => parseQRText(decodedText))
-      .catch(() => showMessage(t('msgQrReadError'), 'error'));
-
     e.target.value = '';
+    stopScanner(); // stop live camera if running
+
+    // Use jsQR directly — html5-qrcode's scanFile() uses createImageBitmap()
+    // which behaves inconsistently in Firefox. jsQR via canvas works everywhere.
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+
+    img.onload = function () {
+      URL.revokeObjectURL(url);
+
+      const canvas = document.createElement('canvas');
+      canvas.width  = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      ctx.drawImage(img, 0, 0);
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const result    = jsQR(imageData.data, imageData.width, imageData.height, {
+        inversionAttempts: 'attemptBoth',
+      });
+
+      if (result) {
+        parseQRText(result.data);
+      } else {
+        showMessage(t('msgQrReadError'), 'error');
+      }
+    };
+
+    img.onerror = function () {
+      URL.revokeObjectURL(url);
+      showMessage(t('msgQrReadError'), 'error');
+    };
+
+    img.src = url;
   });
 }
 
