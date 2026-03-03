@@ -296,7 +296,19 @@ export async function shareStandee() {
       ? `Pay ${shareName}${shareAmount ? ' ' + shareAmount : ''}`
       : `Pay ${shareUpiId}${shareAmount ? ' ' + shareAmount : ''}`;
 
+    // Build the payment link URL (same logic as generator.js)
+    const rawAm = $('standeeAmount').textContent.replace('₹', '').trim();
+    const amNum = Number(rawAm);
+    let paymentLink = `${BASE_PAY_URL}/${shareUpiId.replace(/[/?#\[\]!$&'()*+,;=%]/g, encodeURIComponent)}`;
+    if (shareName && shareName !== 'UPI Payment') paymentLink += `/${encodeURIComponent(shareName)}`;
+    if (rawAm && !isNaN(amNum) && amNum >= 1)      paymentLink += `/${encodeURIComponent(String(amNum))}`;
+
+    // Standard caption (Chrome/iOS) — no link needed, image carries the QR
     const caption = `${payLine}\n\nCreate Your Own Custom UPI QR Code and Shareable Payment Link on https://upinspect.pages.dev`;
+
+    // Firefox caption — no image in share sheet, so include the payment link
+    // so the recipient can tap to pay directly
+    const captionWithLink = `${payLine}\n\n🔗 Pay here: ${paymentLink}\n\nCreate Your Own Custom UPI QR Code and Shareable Payment Link on https://upinspect.pages.dev`;
 
     if (navigator.share) {
       // Probe whether this browser/device can share files.
@@ -312,7 +324,7 @@ export async function shareStandee() {
         // then share the caption text so they can paste it alongside.
         await downloadStandee();
         try {
-          await navigator.share({ title: payLine, text: caption });
+          await navigator.share({ title: payLine, text: captionWithLink });
         } catch (textShareErr) {
           if (textShareErr.name !== 'AbortError') {
             showMessage(t('msgShareFailed'), 'error');
