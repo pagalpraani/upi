@@ -327,34 +327,37 @@ export async function shareStandee() {
     return;
   }
 
-  const canShareFiles = navigator.canShare?.({ files: [file] });
-
-  if (canShareFiles) {
-    // Chrome Android, iOS Safari, Edge — share sheet with image + caption
-    try {
-      await navigator.share({ title: payLine, text: caption, files: [file] });
-    } catch (e) {
-      if (e.name !== 'AbortError') showMessage(t('msgShareFailed'), 'error');
-    }
-  } else {
-    // Firefox Android — download image, then open share sheet with caption + payment link
-    _triggerDownload(blob);
-    try {
-      await navigator.share({ title: payLine, text: captionWithLink });
-    } catch (e) {
-      if (e.name !== 'AbortError') showMessage(t('msgShareFailed'), 'error');
+  // Try sharing with image first (Chrome Android, iOS Safari, Edge).
+  // If the browser doesn't support file sharing, it throws — we catch and
+  // fall back to download + text share (Firefox Android).
+  try {
+    await navigator.share({ title: payLine, text: caption, files: [file] });
+  } catch (e) {
+    if (e.name === 'AbortError') {
+      // User cancelled — do nothing
+    } else {
+      // File sharing not supported (Firefox Android) —
+      // download the image then share text caption with payment link
+      _triggerDownload(blob);
+      try {
+        await navigator.share({ title: payLine, text: captionWithLink });
+      } catch (e2) {
+        if (e2.name !== 'AbortError') showMessage(t('msgShareFailed'), 'error');
+      }
     }
   }
 
   if (btn) btn.disabled = false;
 }
 
-// Trigger a file download from a Blob without re-rendering the canvas
+// Trigger a file download from an already-rendered Blob
 function _triggerDownload(blob) {
   const url = URL.createObjectURL(blob);
   const a   = document.createElement('a');
   a.href     = url;
   a.download = 'UPInspect-QR.png';
+  document.body.appendChild(a);
   a.click();
-  URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 100);
 }
