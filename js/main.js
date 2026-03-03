@@ -1,6 +1,6 @@
 // ============================================================
 // main.js — Application entry point & bootstrap
-// UPInspect v1.0
+// UPInspect
 // ============================================================
 
 import { state }                          from './state.js';
@@ -65,9 +65,19 @@ window.addEventListener('DOMContentLoaded', () => {
     // Show the two action buttons below the card
     showPayLinkButtons();
 
+    // Show footer on paylink page
+    const footer = document.getElementById('siteFooter');
+    if (footer) footer.classList.remove('hidden');
+
     // #2 Dynamic tab title: "Pay Rahul — UPInspect"
     const displayName = (pn && pn !== 'Unknown') ? pn : pa;
     document.title = `Pay ${displayName} — UPInspect`;
+  }
+
+  // Show footer on initial load (Home view is default)
+  if (!state.isPaymentLinkMode) {
+    const footer = document.getElementById('siteFooter');
+    if (footer) footer.classList.remove('hidden');
   }
 
   // 3. Apply translations
