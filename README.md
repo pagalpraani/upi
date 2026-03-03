@@ -35,84 +35,36 @@ Most UPI QR scans blindly redirect you to a payment app with no chance to verify
 
 ---
 
-## 🛠️ Technical Details & Developer Guide
+## 🔗 Payment Link URLs
+
+UPInspect uses clean path-based URLs for shareable payment links:
+
+```text
+https://upinspect.pages.dev/{upi-id}/{name}/{amount}
+
+# Examples
+https://upinspect.pages.dev/rahul@upi/Rahul%20Traders/500
+https://upinspect.pages.dev/shop@okaxis/My%20Shop
+https://upinspect.pages.dev/pay@upi/500
+```
+
+| Segment | Required | Description |
+|---|---|---|
+| `upi-id` | ✅ | UPI ID (e.g. `name@upi`) — `@` is kept readable |
+| `name` | Optional | Merchant or payee name |
+| `amount` | Optional | Pre-filled amount in ₹ (numeric segment auto-detected) |
+
+The router auto-detects whether the second segment is a name or an amount, so both `/pa/500` and `/pa/name/500` resolve correctly.
+
+When opened, the link shows a verified payment card with **Pay Now** and **Copy UPI ID** options. No app install required.
+
+---
+
+## 🛠️ Deployment & Tech Stack
 
 <details>
-  <summary><b>🔗 Payment Link URLs</b></summary>
+  <summary><b>Deploying to Cloudflare Pages</b></summary>
 
-  UPInspect uses clean path-based URLs for shareable payment links:
-
-  ```text
-  https://upinspect.pages.dev/{upi-id}/{name}/{amount}
-
-  # Examples
-  https://upinspect.pages.dev/rahul@upi/Rahul%20Traders/500
-  https://upinspect.pages.dev/shop@okaxis/My%20Shop
-  https://upinspect.pages.dev/pay@upi/500
-  ```
-
-  | Segment | Required | Description |
-  |---|---|---|
-  | `upi-id` | ✅ | UPI ID (e.g. `name@upi`) — `@` is kept readable |
-  | `name` | Optional | Merchant or payee name |
-  | `amount` | Optional | Pre-filled amount in ₹ (numeric segment auto-detected) |
-
-  The router auto-detects whether the second segment is a name or an amount, so both `/pa/500` and `/pa/name/500` resolve correctly.
-
-  When opened, the link shows a verified payment card with **Pay Now** and **Copy UPI ID** options. No app install required.
-</details>
-
-<details>
-  <summary><b>🌍 Multi-Language Support</b></summary>
-
-  UPInspect supports English and Hindi with a modular locale system. Adding a new language takes 3 steps:
-
-  **1. Create the locale file**
-  ```text
-  js/locales/mr.js   ← copy en.js, translate all values, keep all keys identical
-  ```
-
-  **2. Register it in `js/i18n.js`**
-  ```js
-  import mr from './locales/mr.js';
-
-  const LOCALES = { en, hi, mr };       // add to registry
-  const CYCLE   = ['en', 'hi', 'mr'];   // add to toggle cycle
-  ```
-
-  **3. Done.** The toggle button cycles through all languages automatically.
-
-  ### How translations work
-
-  | Mechanism | Usage |
-  |---|---|
-  | `id` matching | `<span id="txtNavHome">` — updated by key lookup |
-  | `data-i18n` | `<span data-i18n="txtOptional">` — for nested text nodes |
-  | `data-i18n-placeholder` | `<input data-i18n-placeholder="txtLabelUpiId">` |
-  | `data-i18n-label` | `<label data-i18n-label="txtLabelName">` — updates text node only, preserves child elements |
-
-  > **Pro-tip:** In JS files, always use `t('key')` for translated strings — never hardcode `state.currentLang === 'en' ? ... : ...` ternaries. Language state lives in `i18n.js` only, accessed via `getLang()`.
-</details>
-
-<details>
-  <summary><b>💻 Running Locally & Cloudflare Deployment</b></summary>
-
-  ### Running Locally
-  Because the JS uses ES modules (`type="module"`), you need a local HTTP server — opening `index.html` as a `file://` URL will cause CORS errors on module imports.
-
-  ```bash
-  # Python (built-in)
-  python3 -m http.server 8080
-
-  # Node
-  npx serve .
-
-  # VS Code
-  # Install "Live Server" extension → click "Go Live"
-  ```
-  Then open `http://localhost:8080` in your browser.
-
-  ### Deploying to Cloudflare Pages
   1. Push the repo to GitHub
   2. Connect it to [Cloudflare Pages](https://pages.cloudflare.com)
   3. Set build command to **none**, output directory to **`/`** (repo root)
@@ -127,13 +79,14 @@ Most UPI QR scans blindly redirect you to a payment app with no chance to verify
   /:seg1/:seg2       /index.html  200
   /:seg1/:seg2/:seg3 /index.html  200
   ```
+
   > *Asset passthrough rules must come before the catch-all rules — Cloudflare matches the first rule that applies.*
+
 </details>
 
 <details>
-  <summary><b>📚 Third-Party Libraries & Browser Support</b></summary>
+  <summary><b>Third-Party Libraries</b></summary>
 
-  ### Libraries
   | Library | Version | Purpose |
   |---|---|---|
   | [html5-qrcode](https://github.com/mebjas/html5-qrcode) | latest | Camera QR scanning |
@@ -141,11 +94,15 @@ Most UPI QR scans blindly redirect you to a payment app with no chance to verify
   | [qr-code-styling](https://github.com/kozakdenys/qr-code-styling) | 1.5.0 | Styled QR code canvas rendering |
   | [Google Analytics 4](https://analytics.google.com) | — | Anonymous visitor analytics |
 
-  > **Note on image export:** The standee save/share flow uses native canvas compositing — not `html2canvas`. The card is drawn directly onto a `<canvas>` using the exact colours and layout from `views.css`, then the QR is composited via `ctx.drawImage()` reading the full 1200×1200 source pixels directly. This produces a crisp, pixel-perfect 3× PNG with no font re-rasterisation and no blur.
+  > **Note on image export:** The standee save/share flow uses native canvas compositing — not `html2canvas`. The card is drawn directly onto a `<canvas>` using the exact colours and layout from `views.css`.
 
-  > **Note on file upload scanning:** `html5-qrcode`'s `scanFile()` uses `createImageBitmap()` internally, which behaves inconsistently in Firefox. File uploads are decoded using `jsQR` directly via `canvas.getImageData()` — this works identically across all browsers.
+  > **Note on file upload scanning:** File uploads are decoded using `jsQR` directly via `canvas.getImageData()` to ensure cross-browser compatibility, bypassing Firefox's inconsistent `createImageBitmap()` behaviour.
 
-  ### Browser Support
+</details>
+
+<details>
+  <summary><b>Browser Support</b></summary>
+
   | Feature | Chrome | Firefox | Safari | Samsung Internet |
   |---|---|---|---|---|
   | QR Camera Scan | ✅ | ✅ | ✅ | ✅ |
@@ -159,52 +116,14 @@ Most UPI QR scans blindly redirect you to a payment app with no chance to verify
 
   *\* Torch support depends on device hardware capability, not just the browser.*  
   *† Firefox Android does not support file sharing via the Web Share API. Tapping Share downloads the image and opens a text share sheet with the payment link included in the caption.*
+
 </details>
 
-<details>
-  <summary><b>📂 Project Structure</b></summary>
+---
 
-  ```text
-  upinspect/
-  ├── index.html                   ← Single-page app shell (all views inline)
-  ├── LICENSE                      ← GPL-3.0 License
-  ├── _redirects                   ← Cloudflare Pages SPA routing rules
-  ├── wrangler.toml                ← Cloudflare Pages config
-  │
-  ├── assets/
-  │   └── favicon/
-  │       ├── favicon.svg          ← SVG icon (scalable, gradient background)
-  │       ├── favicon.ico          ← Multi-size ICO (16/32/48px)
-  │       ├── favicon-32.png       ← PNG fallback (32px)
-  │       ├── favicon-96.png       ← PNG fallback (96px)
-  │       ├── apple-touch-icon.png ← iOS home screen (180px, rounded corners)
-  │       ├── icon-192.png         ← Android PWA icon (192px, maskable)
-  │       ├── icon-512.png         ← Android PWA splash (512px, maskable)
-  │       └── site.webmanifest     ← PWA manifest
-  │
-  ├── css/
-  │   ├── tokens.css               ← Design tokens (CSS variables) & reset
-  │   ├── animations.css           ← Keyframe animations
-  │   ├── layout.css               ← Body, container, top-bar, bottom-nav, views
-  │   ├── components.css           ← Shared UI: cards, inputs, buttons, tabs, toast
-  │   └── views.css                ← Per-view styles: Home, Scanner, Standee, About
-  │
-  └── js/
-      ├── main.js                  ← Entry point: boot, URL routing, global bridge
-      ├── state.js                 ← Shared state & constants
-      ├── router.js                ← App view switching & tab routing
-      ├── ui.js                    ← Toast notifications, theme toggle (OS preference aware)
-      ├── scanner.js               ← Camera scanning, torch toggle, file-upload QR reading
-      ├── extractor.js             ← Extracted card rendering, editable amount, copy & pay
-      ├── generator.js             ← QR card & payment link generation
-      ├── share.js                 ← Standee PNG export via native canvas (no html2canvas)
-      ├── paylink.js               ← Payment link landing page logic
-      ├── i18n.js                  ← Language loader, t() helper, applyLanguage()
-      └── locales/
-          ├── en.js                ← English strings (105 keys)
-          └── hi.js                ← Hindi strings (105 keys)
-  ```
-</details>
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on how to set up the project locally, project structure, code style guidelines, and how to add support for new languages.
 
 ---
 
