@@ -1,6 +1,6 @@
 // ============================================================
 // extractor.js — Render extracted UPI data & payment actions
-// UPInspect v1.0
+// UPInspect
 // ============================================================
 
 import { state }       from './state.js';
