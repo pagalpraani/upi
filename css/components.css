@@ -1,7 +1,7 @@
 /* ============================================================
    components.css — Shared UI components
    (cards, inputs, buttons, tabs, toast)
-   UPInspect v1.0
+   UPInspect
    ============================================================ */
 
 /* ─── Card ─── */
@@ -358,4 +358,24 @@ button.brand {
 .btn-amt-cancel:hover {
   border-color: var(--text-muted);
   color: var(--text);
+}
+
+/* ─── Site Footer ──────────────────────────────────────────── */
+.site-footer {
+  text-align: center;
+  padding: 12px 0 6px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.site-footer a {
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.site-footer.hidden {
+  display: none;
 }
