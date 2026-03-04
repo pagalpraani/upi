@@ -1,6 +1,6 @@
 // ============================================================
 // share.js — Standee export via native canvas compositing
-// UPInspect v1.0
+// UPInspect
 //
 // Draws the complete standee card natively on <canvas> using
 // hardcoded layout constants that mirror views.css exactly.
