@@ -6,7 +6,7 @@ Thanks for taking the time to contribute! UPInspect is a small, focused tool and
 
 ## 🧭 Before You Start
 
-- Check [open issues](https://github.com/pagalpraani/UPInspect/issues) to avoid duplicate work
+- Check [open issues](https://github.com/nitinnagar23/UPInspect/issues) to avoid duplicate work
 - For big changes, open an issue first to discuss the idea before writing code
 - For small fixes (typos, locale strings, minor bugs) — just open a PR directly
 
@@ -16,7 +16,7 @@ Thanks for taking the time to contribute! UPInspect is a small, focused tool and
 
 ```bash
 # 1. Fork and clone
-git clone https://github.com/your-username/UPInspect.git
+git clone https://github.com/nitinnagar23/UPInspect.git
 cd UPInspect
 
 # 2. Serve locally (ES modules require an HTTP server — file:// won't work)
@@ -97,12 +97,6 @@ Open an issue and include:
 - Console errors if any (DevTools → Console)
 
 UPI ID and payment data are never stored, so feel free to use dummy values like `test@upi` when reporting.
-
----
-
-## 🔒 Security Issues
-
-Please **do not** open a public issue for security vulnerabilities. Instead, describe the issue privately via [GitHub's private vulnerability reporting](https://github.com/pagalpraani/UPInspect/security/advisories/new).
 
 ---
 
