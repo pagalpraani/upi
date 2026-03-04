@@ -363,11 +363,12 @@ button.brand {
 /* ─── Site Footer ──────────────────────────────────────────── */
 .site-footer {
   text-align: center;
-  padding: 12px 0 6px;
+  padding: 16px 0 8px;
   font-family: var(--font-mono);
   font-size: 0.7rem;
   color: var(--text-muted);
   letter-spacing: 0.5px;
+  line-height: 1.8;
 }
 
 .site-footer a {
@@ -378,4 +379,9 @@ button.brand {
 
 .site-footer.hidden {
   display: none;
+}
+
+.footer-sep {
+  margin: 0 6px;
+  opacity: 0.5;
 }
